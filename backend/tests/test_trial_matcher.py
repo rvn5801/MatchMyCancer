@@ -6,6 +6,7 @@ from app.models.biomarker import Biomarker, BiomarkerResult
 from app.pipelines.trial_matcher import find_matching_trials
 
 
+@pytest.mark.network
 @pytest.mark.asyncio
 class TestTrialMatcher:
     async def test_finds_trials_for_egfr_lung(self):

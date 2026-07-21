@@ -108,6 +108,7 @@ class TestTrialSummaryParsing:
         assert result.status == ""
 
 
+@pytest.mark.network
 @pytest.mark.asyncio
 class TestClinicalTrialsClient:
     """Integration tests — calls the real ClinicalTrials.gov API."""
