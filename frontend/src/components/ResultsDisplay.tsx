@@ -163,6 +163,7 @@ interface ResultsDisplayProps {
 export function ResultsDisplay({ data, onReset }: ResultsDisplayProps) {
   const { extraction, explanations, clinical_summary, therapies, trials, guardrails, meta } = data;
   const biomarkers = extraction.biomarkers.biomarkers;
+  const [showAllTrials, setShowAllTrials] = useState(false);
 
   const handleDownload = () => {
     const lines: string[] = [];
@@ -216,13 +217,27 @@ export function ResultsDisplay({ data, onReset }: ResultsDisplayProps) {
     lines.push(`Biomarkers verified: ${guardrails.source_verification.verified}/${guardrails.source_verification.total}`, "");
     lines.push(rule("="), "DISCLAIMER: AI-generated analysis for educational purposes only.", "Discuss all findings with your oncology team.", rule("="));
 
-    const blob = new Blob([lines.join("\n")], { type: "text/plain;charset=utf-8" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `MatchMyCancer_Report_${new Date().toISOString().slice(0, 10)}.txt`;
-    a.click();
-    URL.revokeObjectURL(url);
+    // Open a print-friendly page and let the browser save it as PDF —
+    // native, no PDF dependency. Reuses the same report text as before.
+    const esc = (s: string) =>
+      s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    const w = window.open("", "_blank", "width=820,height=640");
+    if (!w) {
+      alert("Please allow pop-ups to download the report.");
+      return;
+    }
+    w.document.write(
+      `<!doctype html><html><head><title>MatchMyCancer Report ${new Date()
+        .toISOString()
+        .slice(0, 10)}</title></head>` +
+        `<body style="margin:0"><pre style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace;` +
+        `font-size:12px;line-height:1.5;white-space:pre-wrap;padding:32px;color:#1e293b">` +
+        esc(lines.join("\n")) +
+        `</pre></body></html>`
+    );
+    w.document.close();
+    w.focus();
+    w.print();
   };
 
   return (
@@ -242,7 +257,7 @@ export function ResultsDisplay({ data, onReset }: ResultsDisplayProps) {
             onClick={handleDownload}
             className="inline-flex items-center gap-2 px-3.5 py-2 bg-white border border-slate-200 text-slate-700 rounded-lg hover:bg-slate-50 text-sm font-medium transition-colors"
           >
-            <Icon name="download" size={16} /> Download
+            <Icon name="download" size={16} /> Save PDF
           </button>
           <button
             onClick={onReset}
@@ -348,7 +363,7 @@ export function ResultsDisplay({ data, onReset }: ResultsDisplayProps) {
             <section>
               <SectionTitle icon="flask" title={`Clinical trials (${trials.length})`} />
               <div className="space-y-3">
-                {trials.slice(0, 5).map((trial, idx) => (
+                {(showAllTrials ? trials : trials.slice(0, 5)).map((trial, idx) => (
                   <div key={idx} className="bg-white rounded-xl p-5 border border-slate-200">
                     <div className="flex items-start justify-between gap-3 mb-1">
                       <h3 className="font-semibold text-slate-800">{trial.title}</h3>
@@ -393,12 +408,14 @@ export function ResultsDisplay({ data, onReset }: ResultsDisplayProps) {
                   </div>
                 ))}
                 {trials.length > 5 && (
-                  <p className="text-center text-sm text-slate-500">
-                    …and {trials.length - 5} more.{" "}
-                    <a href="https://clinicaltrials.gov" target="_blank" rel="noopener noreferrer" className="text-teal-600 underline">
-                      View all
-                    </a>
-                  </p>
+                  <div className="text-center">
+                    <button
+                      onClick={() => setShowAllTrials((v) => !v)}
+                      className="text-sm font-medium text-teal-600 hover:text-teal-700"
+                    >
+                      {showAllTrials ? "Show fewer" : `View all ${trials.length} trials`}
+                    </button>
+                  </div>
                 )}
               </div>
             </section>

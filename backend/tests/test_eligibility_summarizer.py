@@ -4,12 +4,34 @@ import os
 
 import pytest
 
-from app.pipelines.eligibility_summarizer import summarize_eligibility
+from app.pipelines.eligibility_summarizer import (
+    _strip_json_fences,
+    summarize_eligibility,
+)
 
 
 def _requires_api_key():
     if not os.getenv("OPENAI_API_KEY"):
         pytest.skip("OPENAI_API_KEY not set")
+
+
+class TestStripJsonFences:
+    def test_strips_json_code_fence(self):
+        import json
+
+        fenced = (
+            '```json\n'
+            '{"summary": ["a"], "eligibility": "LIKELY ELIGIBLE", "reasoning": "x"}\n'
+            '```'
+        )
+        parsed = json.loads(_strip_json_fences(fenced))
+        assert parsed["eligibility"] == "LIKELY ELIGIBLE"
+
+    def test_strips_bare_fence(self):
+        assert _strip_json_fences('```\n{"a": 1}\n```') == '{"a": 1}'
+
+    def test_leaves_plain_json_untouched(self):
+        assert _strip_json_fences('{"a": 1}') == '{"a": 1}'
 
 
 class TestEligibilitySummarizer:

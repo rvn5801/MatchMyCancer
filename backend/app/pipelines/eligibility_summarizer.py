@@ -11,6 +11,7 @@ with their doctor, without reading 500 words of medical jargon.
 """
 
 import logging
+import re
 from typing import Dict
 
 from langchain_openai import ChatOpenAI
@@ -18,6 +19,16 @@ from langchain_openai import ChatOpenAI
 from app.core.config import settings
 
 logger = logging.getLogger(__name__)
+
+
+def _strip_json_fences(text: str) -> str:
+    """LLMs often wrap JSON in ```json … ``` fences. Strip them so
+    json.loads succeeds instead of falling back to dumping the raw string."""
+    text = text.strip()
+    if text.startswith("```"):
+        text = re.sub(r"^```[a-zA-Z]*\s*", "", text)
+        text = re.sub(r"\s*```$", "", text).strip()
+    return text
 
 ELIGIBILITY_PROMPT = """\
 You are a clinical trial navigator explaining eligibility criteria to a patient.
@@ -103,10 +114,10 @@ def summarize_eligibility(
         },
     ])
 
-    # Parse the LLM's JSON response
+    # Parse the LLM's JSON response (may be wrapped in ```json fences)
     import json
     try:
-        result = json.loads(response.content)
+        result = json.loads(_strip_json_fences(response.content))
     except json.JSONDecodeError:
         logger.warning("LLM returned non-JSON — wrapping as raw text")
         result = {
