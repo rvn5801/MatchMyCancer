@@ -1,0 +1,131 @@
+{
+  "total_reports": 20,
+  "evaluated": 20,
+  "biomarkers": {
+    "avg_precision": 0.0,
+    "avg_recall": 0.0,
+    "avg_f1": 0.0
+  },
+  "report_details": [
+    {
+      "report_id": "TCGA-05-4244",
+      "biomarker_f1": 0.0,
+      "diagnosis_accuracy": 0.3333333333333333,
+      "therapy_recall": 0.0
+    },
+    {
+      "report_id": "TCGA-05-4249",
+      "biomarker_f1": 0.0,
+      "diagnosis_accuracy": 0.3333333333333333,
+      "therapy_recall": 0.0
+    },
+    {
+      "report_id": "TCGA-05-4250",
+      "biomarker_f1": 0.0,
+      "diagnosis_accuracy": 0.3333333333333333,
+      "therapy_recall": 0.0
+    },
+    {
+      "report_id": "TCGA-05-4382",
+      "biomarker_f1": 0.0,
+      "diagnosis_accuracy": 0.3333333333333333,
+      "therapy_recall": 0.0
+    },
+    {
+      "report_id": "TCGA-05-4384",
+      "biomarker_f1": 0.0,
+      "diagnosis_accuracy": 0.3333333333333333,
+      "therapy_recall": 0.0
+    },
+    {
+      "report_id": "TCGA-05-4389",
+      "biomarker_f1": 0.0,
+      "diagnosis_accuracy": 0.3333333333333333,
+      "therapy_recall": 0.0
+    },
+    {
+      "report_id": "TCGA-05-4390",
+      "biomarker_f1": 0.0,
+      "diagnosis_accuracy": 0.3333333333333333,
+      "therapy_recall": 0.0
+    },
+    {
+      "report_id": "TCGA-05-4395",
+      "biomarker_f1": 0.0,
+      "diagnosis_accuracy": 0.3333333333333333,
+      "therapy_recall": 0.0
+    },
+    {
+      "report_id": "TCGA-05-4396",
+      "biomarker_f1": 0.0,
+      "diagnosis_accuracy": 0.3333333333333333,
+      "therapy_recall": 0.0
+    },
+    {
+      "report_id": "TCGA-05-4397",
+      "biomarker_f1": 0.0,
+      "diagnosis_accuracy": 0.3333333333333333,
+      "therapy_recall": 0.0
+    },
+    {
+      "report_id": "TCGA-05-4398",
+      "biomarker_f1": 0.0,
+      "diagnosis_accuracy": 0.3333333333333333,
+      "therapy_recall": 0.0
+    },
+    {
+      "report_id": "TCGA-05-4402",
+      "biomarker_f1": 0.0,
+      "diagnosis_accuracy": 0.3333333333333333,
+      "therapy_recall": 0.0
+    },
+    {
+      "report_id": "TCGA-05-4403",
+      "biomarker_f1": 0.0,
+      "diagnosis_accuracy": 0.3333333333333333,
+      "therapy_recall": 0.0
+    },
+    {
+      "report_id": "TCGA-05-4405",
+      "biomarker_f1": 0.0,
+      "diagnosis_accuracy": 0.3333333333333333,
+      "therapy_recall": 0.0
+    },
+    {
+      "report_id": "TCGA-05-4410",
+      "biomarker_f1": 0.0,
+      "diagnosis_accuracy": 0.3333333333333333,
+      "therapy_recall": 0.0
+    },
+    {
+      "report_id": "TCGA-05-4415",
+      "biomarker_f1": 0.0,
+      "diagnosis_accuracy": 0.3333333333333333,
+      "therapy_recall": 0.0
+    },
+    {
+      "report_id": "TCGA-05-4417",
+      "biomarker_f1": 0.0,
+      "diagnosis_accuracy": 0.3333333333333333,
+      "therapy_recall": 0.0
+    },
+    {
+      "report_id": "TCGA-05-4418",
+      "biomarker_f1": 0.0,
+      "diagnosis_accuracy": 0.3333333333333333,
+      "therapy_recall": 0.0
+    },
+    {
+      "report_id": "TCGA-05-4420",
+      "biomarker_f1": 0.0,
+      "diagnosis_accuracy": 0.3333333333333333,
+      "therapy_recall": 0.0
+    },
+    {
+      "report_id": "TCGA-05-4422",
+      "biomarker_f1": 0.0,
+      "diagnosis_accuracy": 0.3333333333333333,
+      "therapy_recall": 0.0
+    }
+  ]
+}

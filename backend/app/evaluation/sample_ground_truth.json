@@ -1,0 +1,54 @@
+{
+  "description": "Sample ground truth annotations for MatchMyCancer pipeline evaluation. Add your own reports following this format.",
+  "reports": [
+    {
+      "report_id": "lung_egfr_001",
+      "report_text": "Pathology Report: Lung adenocarcinoma, Stage IV. EGFR exon 19 deletion detected by NGS. PD-L1 TPS 80%. ALK negative. ROS1 negative.",
+      "ground_truth": {
+        "biomarkers": [
+          {"gene": "EGFR", "alteration": "exon 19 deletion"},
+          {"gene": "ALK", "alteration": "negative"},
+          {"gene": "ROS1", "alteration": "negative"}
+        ],
+        "diagnosis": {
+          "primary_site": "lung",
+          "histology": "adenocarcinoma",
+          "stage": "Stage IV"
+        },
+        "expected_therapies": ["Osimertinib", "Erlotinib", "Gefitinib"]
+      }
+    },
+    {
+      "report_id": "melanoma_braf_001",
+      "report_text": "Diagnosis: Metastatic melanoma. BRAF V600E mutation detected by PCR. NRAS: wild-type. PD-L1 expression: negative (<1%).",
+      "ground_truth": {
+        "biomarkers": [
+          {"gene": "BRAF", "alteration": "V600E"},
+          {"gene": "NRAS", "alteration": "wild-type"}
+        ],
+        "diagnosis": {
+          "primary_site": "skin",
+          "histology": "melanoma",
+          "stage": "metastatic"
+        },
+        "expected_therapies": ["Vemurafenib", "Dabrafenib", "Trametinib"]
+      }
+    },
+    {
+      "report_id": "colorectal_msi_001",
+      "report_text": "Colorectal adenocarcinoma, Stage IIIB. MSI-H detected (4/5 markers unstable). KRAS G12D mutation. TMB 25.3 mut/Mb. BRAF wild-type.",
+      "ground_truth": {
+        "biomarkers": [
+          {"gene": "KRAS", "alteration": "G12D"},
+          {"gene": "BRAF", "alteration": "wild-type"}
+        ],
+        "diagnosis": {
+          "primary_site": "colon",
+          "histology": "adenocarcinoma",
+          "stage": "Stage IIIB"
+        },
+        "expected_therapies": ["Pembrolizumab"]
+      }
+    }
+  ]
+}

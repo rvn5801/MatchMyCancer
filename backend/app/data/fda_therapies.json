@@ -1,0 +1,245 @@
+[
+  {
+    "drug": "Osimertinib",
+    "brand": "Tagrisso",
+    "biomarker": "EGFR",
+    "alteration": "exon 19 deletion, L858R, T790M",
+    "cancer_type": "Non-small cell lung cancer",
+    "fda_approval_year": 2018,
+    "source": "OncoKB Level 1"
+  },
+  {
+    "drug": "Erlotinib",
+    "brand": "Tarceva",
+    "biomarker": "EGFR",
+    "alteration": "exon 19 deletion, L858R",
+    "cancer_type": "Non-small cell lung cancer",
+    "fda_approval_year": 2013,
+    "source": "OncoKB Level 1"
+  },
+  {
+    "drug": "Gefitinib",
+    "brand": "Iressa",
+    "biomarker": "EGFR",
+    "alteration": "exon 19 deletion, L858R",
+    "cancer_type": "Non-small cell lung cancer",
+    "fda_approval_year": 2015,
+    "source": "OncoKB Level 1"
+  },
+  {
+    "drug": "Trastuzumab",
+    "brand": "Herceptin",
+    "biomarker": "ERBB2",
+    "alteration": "amplification, overexpression",
+    "cancer_type": "Breast cancer, Gastric cancer",
+    "fda_approval_year": 1998,
+    "source": "OncoKB Level 1"
+  },
+  {
+    "drug": "Pertuzumab",
+    "brand": "Perjeta",
+    "biomarker": "ERBB2",
+    "alteration": "amplification, overexpression",
+    "cancer_type": "Breast cancer",
+    "fda_approval_year": 2012,
+    "source": "OncoKB Level 1"
+  },
+  {
+    "drug": "Trastuzumab emtansine",
+    "brand": "Kadcyla",
+    "biomarker": "ERBB2",
+    "alteration": "amplification, overexpression",
+    "cancer_type": "Breast cancer",
+    "fda_approval_year": 2013,
+    "source": "OncoKB Level 1"
+  },
+  {
+    "drug": "Trastuzumab deruxtecan",
+    "brand": "Enhertu",
+    "biomarker": "ERBB2",
+    "alteration": "amplification, overexpression, mutation",
+    "cancer_type": "Breast cancer, Gastric cancer, NSCLC",
+    "fda_approval_year": 2019,
+    "source": "OncoKB Level 1"
+  },
+  {
+    "drug": "Vemurafenib",
+    "brand": "Zelboraf",
+    "biomarker": "BRAF",
+    "alteration": "V600E, V600K",
+    "cancer_type": "Melanoma",
+    "fda_approval_year": 2011,
+    "source": "OncoKB Level 1"
+  },
+  {
+    "drug": "Dabrafenib",
+    "brand": "Tafinlar",
+    "biomarker": "BRAF",
+    "alteration": "V600E, V600K",
+    "cancer_type": "Melanoma, NSCLC, Anaplastic thyroid cancer",
+    "fda_approval_year": 2013,
+    "source": "OncoKB Level 1"
+  },
+  {
+    "drug": "Trametinib",
+    "brand": "Mekinist",
+    "biomarker": "BRAF",
+    "alteration": "V600E, V600K",
+    "cancer_type": "Melanoma, NSCLC",
+    "fda_approval_year": 2013,
+    "source": "OncoKB Level 1"
+  },
+  {
+    "drug": "Crizotinib",
+    "brand": "Xalkori",
+    "biomarker": "ALK",
+    "alteration": "rearrangement, fusion",
+    "cancer_type": "Non-small cell lung cancer",
+    "fda_approval_year": 2011,
+    "source": "OncoKB Level 1"
+  },
+  {
+    "drug": "Alectinib",
+    "brand": "Alecensa",
+    "biomarker": "ALK",
+    "alteration": "rearrangement, fusion",
+    "cancer_type": "Non-small cell lung cancer",
+    "fda_approval_year": 2015,
+    "source": "OncoKB Level 1"
+  },
+  {
+    "drug": "Lorlatinib",
+    "brand": "Lorbrena",
+    "biomarker": "ALK",
+    "alteration": "rearrangement, fusion",
+    "cancer_type": "Non-small cell lung cancer",
+    "fda_approval_year": 2018,
+    "source": "OncoKB Level 1"
+  },
+  {
+    "drug": "Entrectinib",
+    "brand": "Rozlytrek",
+    "biomarker": "ROS1",
+    "alteration": "rearrangement, fusion",
+    "cancer_type": "Non-small cell lung cancer",
+    "fda_approval_year": 2019,
+    "source": "OncoKB Level 1"
+  },
+  {
+    "drug": "Larotrectinib",
+    "brand": "Vitrakvi",
+    "biomarker": "NTRK1",
+    "alteration": "fusion",
+    "cancer_type": "Solid tumors (tumor-agnostic)",
+    "fda_approval_year": 2018,
+    "source": "OncoKB Level 1"
+  },
+  {
+    "drug": "Entrectinib",
+    "brand": "Rozlytrek",
+    "biomarker": "NTRK1",
+    "alteration": "fusion",
+    "cancer_type": "Solid tumors (tumor-agnostic)",
+    "fda_approval_year": 2019,
+    "source": "OncoKB Level 1"
+  },
+  {
+    "drug": "Pembrolizumab",
+    "brand": "Keytruda",
+    "biomarker": "MSI-H",
+    "alteration": "MSI-H, dMMR",
+    "cancer_type": "Solid tumors (tumor-agnostic)",
+    "fda_approval_year": 2017,
+    "source": "OncoKB Level 1"
+  },
+  {
+    "drug": "Pembrolizumab",
+    "brand": "Keytruda",
+    "biomarker": "TMB-H",
+    "alteration": "TMB >= 10 mut/Mb",
+    "cancer_type": "Solid tumors (tumor-agnostic)",
+    "fda_approval_year": 2020,
+    "source": "OncoKB Level 1"
+  },
+  {
+    "drug": "Olaparib",
+    "brand": "Lynparza",
+    "biomarker": "BRCA1",
+    "alteration": "mutation (germline or somatic)",
+    "cancer_type": "Breast, Ovarian, Pancreatic, Prostate",
+    "fda_approval_year": 2014,
+    "source": "OncoKB Level 1"
+  },
+  {
+    "drug": "Olaparib",
+    "brand": "Lynparza",
+    "biomarker": "BRCA2",
+    "alteration": "mutation (germline or somatic)",
+    "cancer_type": "Breast, Ovarian, Pancreatic, Prostate",
+    "fda_approval_year": 2014,
+    "source": "OncoKB Level 1"
+  },
+  {
+    "drug": "Imatinib",
+    "brand": "Gleevec",
+    "biomarker": "KIT",
+    "alteration": "mutation (exon 11, 9, 13, 17)",
+    "cancer_type": "GIST",
+    "fda_approval_year": 2002,
+    "source": "OncoKB Level 1"
+  },
+  {
+    "drug": "Sotorasib",
+    "brand": "Lumakras",
+    "biomarker": "KRAS",
+    "alteration": "G12C",
+    "cancer_type": "Non-small cell lung cancer",
+    "fda_approval_year": 2021,
+    "source": "OncoKB Level 1"
+  },
+  {
+    "drug": "Cetuximab",
+    "brand": "Erbitux",
+    "biomarker": "KRAS",
+    "alteration": "wild-type (negative selection)",
+    "cancer_type": "Colorectal cancer",
+    "fda_approval_year": 2004,
+    "source": "OncoKB Level 1"
+  },
+  {
+    "drug": "Panitumumab",
+    "brand": "Vectibix",
+    "biomarker": "KRAS",
+    "alteration": "wild-type (negative selection)",
+    "cancer_type": "Colorectal cancer",
+    "fda_approval_year": 2006,
+    "source": "OncoKB Level 1"
+  },
+  {
+    "drug": "Palbociclib",
+    "brand": "Ibrance",
+    "biomarker": "CDKN2A",
+    "alteration": "loss (indirect via CDK4/6 pathway)",
+    "cancer_type": "Breast cancer (HR+/HER2-)",
+    "fda_approval_year": 2015,
+    "source": "OncoKB Level 1"
+  },
+  {
+    "drug": "Atezolizumab",
+    "brand": "Tecentriq",
+    "biomarker": "PD-L1",
+    "alteration": "high expression",
+    "cancer_type": "NSCLC, Bladder, Triple-negative breast",
+    "fda_approval_year": 2016,
+    "source": "OncoKB Level 1"
+  },
+  {
+    "drug": "Nivolumab",
+    "brand": "Opdivo",
+    "biomarker": "PD-L1",
+    "alteration": "expression (various thresholds)",
+    "cancer_type": "Melanoma, NSCLC, RCC, Hodgkin lymphoma",
+    "fda_approval_year": 2014,
+    "source": "OncoKB Level 1"
+  }
+]

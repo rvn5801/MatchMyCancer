@@ -1,0 +1,365 @@
+{
+  "reports": [
+    {
+      "report_id": "TCGA-05-4244",
+      "report_text": "Diagnosis: Lung Adenocarcinoma. Histology: Adenocarcinoma. Stage: Stage IV. Age: 70. Sex: Male. This is a de-identified clinical record from TCGA.",
+      "ground_truth": {
+        "biomarkers": [],
+        "diagnosis": {
+          "primary_site": "lung",
+          "histology": "adenocarcinoma",
+          "stage": "Stage IV"
+        },
+        "expected_therapies": []
+      },
+      "_meta": {
+        "cancer_type": "LUAD",
+        "mutations_raw": [],
+        "age": "70"
+      }
+    },
+    {
+      "report_id": "TCGA-05-4249",
+      "report_text": "Diagnosis: Lung Adenocarcinoma. Histology: Adenocarcinoma. Stage: Stage IB. Age: 67. Sex: Male. This is a de-identified clinical record from TCGA.",
+      "ground_truth": {
+        "biomarkers": [],
+        "diagnosis": {
+          "primary_site": "lung",
+          "histology": "adenocarcinoma",
+          "stage": "Stage IB"
+        },
+        "expected_therapies": []
+      },
+      "_meta": {
+        "cancer_type": "LUAD",
+        "mutations_raw": [],
+        "age": "67"
+      }
+    },
+    {
+      "report_id": "TCGA-05-4250",
+      "report_text": "Diagnosis: Lung Adenocarcinoma. Histology: Adenocarcinoma. Stage: Stage IIIA. Age: 79. Sex: Female. This is a de-identified clinical record from TCGA.",
+      "ground_truth": {
+        "biomarkers": [],
+        "diagnosis": {
+          "primary_site": "lung",
+          "histology": "adenocarcinoma",
+          "stage": "Stage IIIA"
+        },
+        "expected_therapies": []
+      },
+      "_meta": {
+        "cancer_type": "LUAD",
+        "mutations_raw": [],
+        "age": "79"
+      }
+    },
+    {
+      "report_id": "TCGA-05-4382",
+      "report_text": "Diagnosis: Lung Adenocarcinoma. Histology: Adenocarcinoma with mixed subtypes. Stage: Stage IB. Age: 68. Sex: Male. This is a de-identified clinical record from TCGA.",
+      "ground_truth": {
+        "biomarkers": [],
+        "diagnosis": {
+          "primary_site": "lung",
+          "histology": "adenocarcinoma with mixed subtypes",
+          "stage": "Stage IB"
+        },
+        "expected_therapies": []
+      },
+      "_meta": {
+        "cancer_type": "LUAD",
+        "mutations_raw": [],
+        "age": "68"
+      }
+    },
+    {
+      "report_id": "TCGA-05-4384",
+      "report_text": "Diagnosis: Lung Adenocarcinoma. Histology: Adenocarcinoma with mixed subtypes. Stage: Stage IIIA. Age: 66. Sex: Male. This is a de-identified clinical record from TCGA.",
+      "ground_truth": {
+        "biomarkers": [],
+        "diagnosis": {
+          "primary_site": "lung",
+          "histology": "adenocarcinoma with mixed subtypes",
+          "stage": "Stage IIIA"
+        },
+        "expected_therapies": []
+      },
+      "_meta": {
+        "cancer_type": "LUAD",
+        "mutations_raw": [],
+        "age": "66"
+      }
+    },
+    {
+      "report_id": "TCGA-05-4389",
+      "report_text": "Diagnosis: Lung Adenocarcinoma. Histology: Adenocarcinoma with mixed subtypes. Stage: Stage IA. Age: 70. Sex: Male. This is a de-identified clinical record from TCGA.",
+      "ground_truth": {
+        "biomarkers": [],
+        "diagnosis": {
+          "primary_site": "lung",
+          "histology": "adenocarcinoma with mixed subtypes",
+          "stage": "Stage IA"
+        },
+        "expected_therapies": []
+      },
+      "_meta": {
+        "cancer_type": "LUAD",
+        "mutations_raw": [],
+        "age": "70"
+      }
+    },
+    {
+      "report_id": "TCGA-05-4390",
+      "report_text": "Diagnosis: Lung Adenocarcinoma. Histology: Adenocarcinoma with mixed subtypes. Stage: Stage IB. Age: 58. Sex: Female. This is a de-identified clinical record from TCGA.",
+      "ground_truth": {
+        "biomarkers": [],
+        "diagnosis": {
+          "primary_site": "lung",
+          "histology": "adenocarcinoma with mixed subtypes",
+          "stage": "Stage IB"
+        },
+        "expected_therapies": []
+      },
+      "_meta": {
+        "cancer_type": "LUAD",
+        "mutations_raw": [],
+        "age": "58"
+      }
+    },
+    {
+      "report_id": "TCGA-05-4395",
+      "report_text": "Diagnosis: Lung Adenocarcinoma. Histology: Adenocarcinoma with mixed subtypes. Stage: Stage IIIB. Age: 76. Sex: Male. This is a de-identified clinical record from TCGA.",
+      "ground_truth": {
+        "biomarkers": [],
+        "diagnosis": {
+          "primary_site": "lung",
+          "histology": "adenocarcinoma with mixed subtypes",
+          "stage": "Stage IIIB"
+        },
+        "expected_therapies": []
+      },
+      "_meta": {
+        "cancer_type": "LUAD",
+        "mutations_raw": [],
+        "age": "76"
+      }
+    },
+    {
+      "report_id": "TCGA-05-4396",
+      "report_text": "Diagnosis: Lung Adenocarcinoma. Histology: Adenocarcinoma with mixed subtypes. Stage: Stage IIIB. Age: 76. Sex: Male. This is a de-identified clinical record from TCGA.",
+      "ground_truth": {
+        "biomarkers": [],
+        "diagnosis": {
+          "primary_site": "lung",
+          "histology": "adenocarcinoma with mixed subtypes",
+          "stage": "Stage IIIB"
+        },
+        "expected_therapies": []
+      },
+      "_meta": {
+        "cancer_type": "LUAD",
+        "mutations_raw": [],
+        "age": "76"
+      }
+    },
+    {
+      "report_id": "TCGA-05-4397",
+      "report_text": "Diagnosis: Lung Adenocarcinoma. Histology: Adenocarcinoma with mixed subtypes. Stage: Stage IIB. Age: 65. Sex: Male. This is a de-identified clinical record from TCGA.",
+      "ground_truth": {
+        "biomarkers": [],
+        "diagnosis": {
+          "primary_site": "lung",
+          "histology": "adenocarcinoma with mixed subtypes",
+          "stage": "Stage IIB"
+        },
+        "expected_therapies": []
+      },
+      "_meta": {
+        "cancer_type": "LUAD",
+        "mutations_raw": [],
+        "age": "65"
+      }
+    },
+    {
+      "report_id": "TCGA-05-4398",
+      "report_text": "Diagnosis: Lung Adenocarcinoma. Histology: Adenocarcinoma with mixed subtypes. Stage: Stage IIIB. Age: 47. Sex: Female. This is a de-identified clinical record from TCGA.",
+      "ground_truth": {
+        "biomarkers": [],
+        "diagnosis": {
+          "primary_site": "lung",
+          "histology": "adenocarcinoma with mixed subtypes",
+          "stage": "Stage IIIB"
+        },
+        "expected_therapies": []
+      },
+      "_meta": {
+        "cancer_type": "LUAD",
+        "mutations_raw": [],
+        "age": "47"
+      }
+    },
+    {
+      "report_id": "TCGA-05-4402",
+      "report_text": "Diagnosis: Lung Adenocarcinoma. Histology: Adenocarcinoma with mixed subtypes. Stage: Stage IV. Age: 57. Sex: Female. This is a de-identified clinical record from TCGA.",
+      "ground_truth": {
+        "biomarkers": [],
+        "diagnosis": {
+          "primary_site": "lung",
+          "histology": "adenocarcinoma with mixed subtypes",
+          "stage": "Stage IV"
+        },
+        "expected_therapies": []
+      },
+      "_meta": {
+        "cancer_type": "LUAD",
+        "mutations_raw": [],
+        "age": "57"
+      }
+    },
+    {
+      "report_id": "TCGA-05-4403",
+      "report_text": "Diagnosis: Lung Adenocarcinoma. Histology: Adenocarcinoma with mixed subtypes. Stage: Stage IB. Age: 76. Sex: Male. This is a de-identified clinical record from TCGA.",
+      "ground_truth": {
+        "biomarkers": [],
+        "diagnosis": {
+          "primary_site": "lung",
+          "histology": "adenocarcinoma with mixed subtypes",
+          "stage": "Stage IB"
+        },
+        "expected_therapies": []
+      },
+      "_meta": {
+        "cancer_type": "LUAD",
+        "mutations_raw": [],
+        "age": "76"
+      }
+    },
+    {
+      "report_id": "TCGA-05-4405",
+      "report_text": "Diagnosis: Lung Adenocarcinoma. Histology: Adenocarcinoma with mixed subtypes. Stage: Stage IB. Age: 74. Sex: Female. This is a de-identified clinical record from TCGA.",
+      "ground_truth": {
+        "biomarkers": [],
+        "diagnosis": {
+          "primary_site": "lung",
+          "histology": "adenocarcinoma with mixed subtypes",
+          "stage": "Stage IB"
+        },
+        "expected_therapies": []
+      },
+      "_meta": {
+        "cancer_type": "LUAD",
+        "mutations_raw": [],
+        "age": "74"
+      }
+    },
+    {
+      "report_id": "TCGA-05-4410",
+      "report_text": "Diagnosis: Lung Adenocarcinoma. Histology: Adenocarcinoma with mixed subtypes. Stage: Stage IB. Age: 62. Sex: Male. This is a de-identified clinical record from TCGA.",
+      "ground_truth": {
+        "biomarkers": [],
+        "diagnosis": {
+          "primary_site": "lung",
+          "histology": "adenocarcinoma with mixed subtypes",
+          "stage": "Stage IB"
+        },
+        "expected_therapies": []
+      },
+      "_meta": {
+        "cancer_type": "LUAD",
+        "mutations_raw": [],
+        "age": "62"
+      }
+    },
+    {
+      "report_id": "TCGA-05-4415",
+      "report_text": "Diagnosis: Lung Adenocarcinoma. Histology: Adenocarcinoma with mixed subtypes. Stage: Stage IIIB. Age: 57. Sex: Male. This is a de-identified clinical record from TCGA.",
+      "ground_truth": {
+        "biomarkers": [],
+        "diagnosis": {
+          "primary_site": "lung",
+          "histology": "adenocarcinoma with mixed subtypes",
+          "stage": "Stage IIIB"
+        },
+        "expected_therapies": []
+      },
+      "_meta": {
+        "cancer_type": "LUAD",
+        "mutations_raw": [],
+        "age": "57"
+      }
+    },
+    {
+      "report_id": "TCGA-05-4417",
+      "report_text": "Diagnosis: Lung Adenocarcinoma. Histology: Adenocarcinoma with mixed subtypes. Stage: Stage IB. Age: 51. Sex: Female. This is a de-identified clinical record from TCGA.",
+      "ground_truth": {
+        "biomarkers": [],
+        "diagnosis": {
+          "primary_site": "lung",
+          "histology": "adenocarcinoma with mixed subtypes",
+          "stage": "Stage IB"
+        },
+        "expected_therapies": []
+      },
+      "_meta": {
+        "cancer_type": "LUAD",
+        "mutations_raw": [],
+        "age": "51"
+      }
+    },
+    {
+      "report_id": "TCGA-05-4418",
+      "report_text": "Diagnosis: Lung Adenocarcinoma. Histology: Adenocarcinoma with mixed subtypes. Stage: Stage IIIA. Age: 69. Sex: Male. This is a de-identified clinical record from TCGA.",
+      "ground_truth": {
+        "biomarkers": [],
+        "diagnosis": {
+          "primary_site": "lung",
+          "histology": "adenocarcinoma with mixed subtypes",
+          "stage": "Stage IIIA"
+        },
+        "expected_therapies": []
+      },
+      "_meta": {
+        "cancer_type": "LUAD",
+        "mutations_raw": [],
+        "age": "69"
+      }
+    },
+    {
+      "report_id": "TCGA-05-4420",
+      "report_text": "Diagnosis: Lung Adenocarcinoma. Histology: Adenocarcinoma with mixed subtypes. Stage: Stage IB. Age: 41. Sex: Male. This is a de-identified clinical record from TCGA.",
+      "ground_truth": {
+        "biomarkers": [],
+        "diagnosis": {
+          "primary_site": "lung",
+          "histology": "adenocarcinoma with mixed subtypes",
+          "stage": "Stage IB"
+        },
+        "expected_therapies": []
+      },
+      "_meta": {
+        "cancer_type": "LUAD",
+        "mutations_raw": [],
+        "age": "41"
+      }
+    },
+    {
+      "report_id": "TCGA-05-4422",
+      "report_text": "Diagnosis: Lung Adenocarcinoma. Histology: Adenocarcinoma with mixed subtypes. Stage: Stage IB. Age: 68. Sex: Male. This is a de-identified clinical record from TCGA.",
+      "ground_truth": {
+        "biomarkers": [],
+        "diagnosis": {
+          "primary_site": "lung",
+          "histology": "adenocarcinoma with mixed subtypes",
+          "stage": "Stage IB"
+        },
+        "expected_therapies": []
+      },
+      "_meta": {
+        "cancer_type": "LUAD",
+        "mutations_raw": [],
+        "age": "68"
+      }
+    }
+  ],
+  "_source": "cBioPortal TCGA clinical data"
+}

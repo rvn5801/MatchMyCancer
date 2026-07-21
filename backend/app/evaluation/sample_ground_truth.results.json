@@ -1,0 +1,29 @@
+{
+  "total_reports": 3,
+  "evaluated": 3,
+  "biomarkers": {
+    "avg_precision": 1.0,
+    "avg_recall": 0.778,
+    "avg_f1": 0.833
+  },
+  "report_details": [
+    {
+      "report_id": "lung_egfr_001",
+      "biomarker_f1": 0.5,
+      "diagnosis_accuracy": 1.0,
+      "therapy_recall": 1.0
+    },
+    {
+      "report_id": "melanoma_braf_001",
+      "biomarker_f1": 1.0,
+      "diagnosis_accuracy": 0.3333333333333333,
+      "therapy_recall": 1.0
+    },
+    {
+      "report_id": "colorectal_msi_001",
+      "biomarker_f1": 1.0,
+      "diagnosis_accuracy": 1.0,
+      "therapy_recall": 0.0
+    }
+  ]
+}

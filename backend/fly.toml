@@ -1,0 +1,35 @@
+# Fly.io config — MatchMyCancer backend.
+# Deploy from this directory:  fly deploy
+# (Rename `app` to a globally-unique name first, or let `fly launch` set it.)
+
+app = "matchmycancer-api"
+primary_region = "iad"
+
+[build]
+  dockerfile = "Dockerfile.prod"
+
+[env]
+  ANALYZE_ENABLED = "true"
+  TRIAL_REFRESH_ENABLED = "false"
+  # Set this to your deployed frontend origin once Vercel is live, e.g.:
+  #   fly secrets set FRONTEND_ORIGIN="https://your-domain.com"
+  # (OPENAI_API_KEY and REDIS_URL are secrets — never put them here.)
+
+# Persistent disk for the ChromaDB trial index (default CHROMA_PERSIST_DIR=./chroma_data → /app/chroma_data)
+[[mounts]]
+  source = "chroma_data"
+  destination = "/app/chroma_data"
+
+[http_service]
+  internal_port = 8000
+  force_https = true
+  auto_stop_machines = true
+  auto_start_machines = true
+  min_machines_running = 0
+
+  [[http_service.checks]]
+    method = "get"
+    path = "/health"
+    interval = "30s"
+    timeout = "5s"
+    grace_period = "10s"

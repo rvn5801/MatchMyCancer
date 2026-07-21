@@ -1,0 +1,151 @@
+Phase 1: Analyze the project (don't write code yet)
+
+Give the AI your .md file and ask it to act like a senior software architect.
+
+Prompt:
+
+Analyze this project idea as if you were reviewing it before development.
+
+I don't want code yet.
+
+Please identify:
+
+Missing requirements
+Ambiguous parts
+Better architecture choices
+Potential scalability issues
+Security concerns
+Features that should be added
+Features that should be removed or simplified
+Risks during implementation
+Questions I should answer before coding
+A revised and improved project specification.
+
+This usually improves the original idea quite a bit.
+
+Phase 2: Improve the document
+
+Then ask:
+
+Rewrite the entire project document with all suggested improvements.
+
+Make it production-ready.
+
+Include:
+
+Goals
+Features
+User stories
+Tech stack
+Folder structure
+APIs
+Database schema
+Milestones
+Future improvements
+
+Now you have a much stronger blueprint.
+
+Phase 3: Break the project into milestones
+
+Instead of asking:
+
+Build my project.
+
+Ask:
+
+Break this project into the smallest possible milestones.
+
+Each milestone should be completable in 1–3 hours.
+
+Each milestone should have:
+
+Goal
+Files to create
+Concepts I'll learn
+Estimated difficulty
+Dependencies
+Success criteria
+
+Example:
+
+Milestone 1
+------------
+Initialize project
+
+Learn:
+- Git
+- Project structure
+- Virtual environments
+
+Files:
+- README.md
+- requirements.txt
+- .gitignore
+
+Success:
+Project runs.
+Phase 4: Learn first, then code
+
+For every milestone:
+
+Don't write code immediately.
+
+First teach me:
+
+why we're building this
+what problem it solves
+how professionals approach it
+common mistakes
+alternative approaches
+
+After you understand it:
+
+Now generate the code.
+
+This helps you build understanding instead of just collecting generated code.
+
+Phase 5: Review the generated code
+
+Never accept code without asking:
+
+Review this code like a senior engineer.
+
+Find:
+
+Bugs
+Bad practices
+Performance issues
+Security issues
+Cleaner alternatives
+Explain every improvement
+
+This is one of the fastest ways to learn.
+
+Phase 6: Refactor
+
+Once a milestone works:
+
+Refactor this code following clean architecture principles.
+
+Explain every change.
+
+Don't remove functionality.
+
+You'll see how experienced developers improve code over time.
+
+Phase 7: Build a knowledge notebook
+
+After each milestone, ask:
+
+Summarize everything I learned.
+
+Include:
+
+New concepts
+New libraries
+Important functions
+Interview questions
+Common mistakes
+Exercises I should try
+
+Over time, this becomes your personalized study guide.

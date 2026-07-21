@@ -1,0 +1,32 @@
+# ── Production Dockerfile ─────────────────────────────────────────────────
+# Multi-stage build: builder compiles deps, runtime is minimal.
+# Size-optimized — final image ~250MB.
+
+FROM python:3.12-slim AS builder
+WORKDIR /app
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends tesseract-ocr \
+    && rm -rf /var/lib/apt/lists/*
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+FROM python:3.12-slim
+WORKDIR /app
+# Copy Tesseract binary from builder
+COPY --from=builder /usr/bin/tesseract /usr/bin/tesseract
+COPY --from=builder /usr/lib/x86_64-linux-gnu/libtesseract* /usr/lib/x86_64-linux-gnu/
+COPY --from=builder /usr/share/tesseract-ocr /usr/share/tesseract-ocr
+# Copy Python packages
+COPY --from=builder /usr/local/lib/python3.12/site-packages /usr/local/lib/python3.12/site-packages
+COPY --from=builder /usr/local/bin /usr/local/bin
+# Copy app code
+COPY . .
+# Persistent dir for the ChromaDB trial index (mount a volume here in prod)
+RUN mkdir -p chroma_data
+
+# Build-time git SHA surfaced at GET /api/v1/version
+ARG GIT_COMMIT=unknown
+ENV GIT_COMMIT=$GIT_COMMIT
+
+EXPOSE 8000
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]

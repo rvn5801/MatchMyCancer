@@ -1,0 +1,39 @@
+# Secrets / env — keep only the template
+.env
+.env.*
+!.env.template
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+*.egg-info/
+.pytest_cache/
+
+# Node / Next
+node_modules/
+.next/
+*.tsbuildinfo
+
+# Build output
+dist/
+build/
+
+# Local data (never commit)
+uploads/
+chroma_data/
+app.db
+dev.db
+
+# Misc
+.DS_Store
+*.log
+
+# Internal docs / assets — keep only the public README + deploy guide
+*.md
+!README.md
+!DEPLOY.md
+*.pdf
+
+/test_reports
+
