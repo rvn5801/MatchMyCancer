@@ -11,9 +11,28 @@ from app.services.trial_indexer import (
 
 class TestTrialIndexing:
     def test_collection_is_created(self):
+        from app.services.trial_indexer import COLLECTION_NAME, _collection_name
+
         collection = get_trial_collection()
         assert collection is not None
-        assert collection.name == "clinical_trials"
+        # Name is namespaced by embedding model so a 384-dim collection can
+        # never be reopened with a 1536-dim embedding function.
+        assert collection.name == _collection_name()
+        assert collection.name.startswith(COLLECTION_NAME)
+
+    def test_collection_name_differs_by_embedding_model(self, monkeypatch):
+        """Regression: OpenAI (1536-dim) and default (384-dim) must not share
+        a collection — ChromaDB pins dimensionality at creation, so sharing a
+        name breaks vector search with InvalidDimensionException."""
+        from app.core.config import settings
+        from app.services.trial_indexer import _collection_name
+
+        monkeypatch.setattr(settings, "openai_api_key", "sk-test")
+        with_key = _collection_name()
+        monkeypatch.setattr(settings, "openai_api_key", "")
+        without_key = _collection_name()
+
+        assert with_key != without_key
 
     def test_index_and_search_synthetic_trials(self):
         """Index synthetic trials and verify semantic search works."""

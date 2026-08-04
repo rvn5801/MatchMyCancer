@@ -30,7 +30,7 @@ COLLECTION_NAME = "clinical_trials"
 
 
 def _get_embedding_function():
-    """Get the OpenAI embedding function, or None if not configured."""
+    """Get the OpenAI embedding function, or the local default if unconfigured."""
     if not settings.openai_api_key:
         logger.warning(
             "OPENAI_API_KEY not set — vector search will use default Chroma embeddings"
@@ -41,6 +41,20 @@ def _get_embedding_function():
         api_key=settings.openai_api_key,
         model_name="text-embedding-3-small",
     )
+
+
+def _collection_name() -> str:
+    """Collection name namespaced by embedding model.
+
+    The embedding function depends on whether OPENAI_API_KEY is set: OpenAI
+    (1536-dim) vs Chroma's default (384-dim). ChromaDB pins dimensionality at
+    creation, so a collection built without the key and later read with it
+    raises InvalidDimensionException and vector search stays broken until the
+    volume is wiped. Distinct names make that collision impossible — each
+    model gets its own collection and rebuilds on demand.
+    """
+    suffix = "openai1536" if settings.openai_api_key else "default384"
+    return f"{COLLECTION_NAME}_{suffix}"
 
 
 def get_trial_collection():
@@ -56,13 +70,13 @@ def get_trial_collection():
     embedding_fn = _get_embedding_function()
 
     collection = client.get_or_create_collection(
-        name=COLLECTION_NAME,
+        name=_collection_name(),
         embedding_function=embedding_fn,
         metadata={"description": "Clinical trial embeddings for semantic search"},
     )
 
     count = collection.count()
-    logger.debug("ChromaDB collection '%s': %d documents", COLLECTION_NAME, count)
+    logger.debug("ChromaDB collection '%s': %d documents", _collection_name(), count)
     return collection
 
 
