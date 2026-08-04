@@ -1,0 +1,523 @@
+{
+  "reports": [
+    {
+      "report_id": "TCGA-3N-A9WB",
+      "report_text": "Diagnosis: Cutaneous Melanoma. Histology: Malignant Melanoma. Stage: Stage IA. Age: 71. Sex: Male. Molecular profiling identified a H725Y alteration in the BRAF gene. Next-generation sequencing detected NRAS Q61K. This is a de-identified clinical record from TCGA.",
+      "ground_truth": {
+        "biomarkers": [
+          {
+            "gene": "BRAF",
+            "alteration": "H725Y"
+          },
+          {
+            "gene": "NRAS",
+            "alteration": "Q61K"
+          }
+        ],
+        "diagnosis": {
+          "primary_site": "skin",
+          "histology": "malignant melanoma",
+          "stage": "Stage IA"
+        },
+        "expected_therapies": []
+      },
+      "_meta": {
+        "cancer_type": "SKCM",
+        "mutations_raw": [
+          "BRAF H725Y",
+          "NRAS Q61K"
+        ],
+        "age": "71"
+      }
+    },
+    {
+      "report_id": "TCGA-3N-A9WC",
+      "report_text": "Diagnosis: Cutaneous Melanoma. Histology: Malignant Melanoma. Stage: Stage IIA. Age: 82. Sex: Male. A pathogenic BRAF H574Y mutation was identified on NGS panel testing. Molecular profiling identified a Q61L alteration in the NRAS gene. This is a de-identified clinical record from TCGA.",
+      "ground_truth": {
+        "biomarkers": [
+          {
+            "gene": "BRAF",
+            "alteration": "H574Y"
+          },
+          {
+            "gene": "NRAS",
+            "alteration": "Q61L"
+          }
+        ],
+        "diagnosis": {
+          "primary_site": "skin",
+          "histology": "malignant melanoma",
+          "stage": "Stage IIA"
+        },
+        "expected_therapies": []
+      },
+      "_meta": {
+        "cancer_type": "SKCM",
+        "mutations_raw": [
+          "BRAF H574Y",
+          "NRAS Q61L"
+        ],
+        "age": "82"
+      }
+    },
+    {
+      "report_id": "TCGA-3N-A9WD",
+      "report_text": "Diagnosis: Cutaneous Melanoma. Histology: Malignant Melanoma. Stage: Stage IIIA. Age: 82. Sex: Male. Sequencing revealed a Q61L substitution in NRAS. TP53 testing was positive for the C141G variant. This is a de-identified clinical record from TCGA.",
+      "ground_truth": {
+        "biomarkers": [
+          {
+            "gene": "NRAS",
+            "alteration": "Q61L"
+          },
+          {
+            "gene": "TP53",
+            "alteration": "C141G"
+          }
+        ],
+        "diagnosis": {
+          "primary_site": "skin",
+          "histology": "malignant melanoma",
+          "stage": "Stage IIIA"
+        },
+        "expected_therapies": []
+      },
+      "_meta": {
+        "cancer_type": "SKCM",
+        "mutations_raw": [
+          "NRAS Q61L",
+          "TP53 C141G"
+        ],
+        "age": "82"
+      }
+    },
+    {
+      "report_id": "TCGA-BF-A1PU",
+      "report_text": "Diagnosis: Cutaneous Melanoma. Histology: Malignant Melanoma. Stage: Stage IIC. Age: 46. Sex: Female. Next-generation sequencing detected BRAF V600E. This is a de-identified clinical record from TCGA.",
+      "ground_truth": {
+        "biomarkers": [
+          {
+            "gene": "BRAF",
+            "alteration": "V600E"
+          }
+        ],
+        "diagnosis": {
+          "primary_site": "skin",
+          "histology": "malignant melanoma",
+          "stage": "Stage IIC"
+        },
+        "expected_therapies": []
+      },
+      "_meta": {
+        "cancer_type": "SKCM",
+        "mutations_raw": [
+          "BRAF V600E"
+        ],
+        "age": "46"
+      }
+    },
+    {
+      "report_id": "TCGA-BF-A1PV",
+      "report_text": "Diagnosis: Cutaneous Melanoma. Histology: Malignant Melanoma. Stage: Stage IIC. Age: 74. Sex: Female. Next-generation sequencing detected NRAS Q61L. This is a de-identified clinical record from TCGA.",
+      "ground_truth": {
+        "biomarkers": [
+          {
+            "gene": "NRAS",
+            "alteration": "Q61L"
+          }
+        ],
+        "diagnosis": {
+          "primary_site": "skin",
+          "histology": "malignant melanoma",
+          "stage": "Stage IIC"
+        },
+        "expected_therapies": []
+      },
+      "_meta": {
+        "cancer_type": "SKCM",
+        "mutations_raw": [
+          "NRAS Q61L"
+        ],
+        "age": "74"
+      }
+    },
+    {
+      "report_id": "TCGA-BF-A1PX",
+      "report_text": "Diagnosis: Cutaneous Melanoma. Histology: Malignant Melanoma. Stage: Stage IIIB. Age: 56. Sex: Male. Molecular profiling identified a V600E alteration in the BRAF gene. This is a de-identified clinical record from TCGA.",
+      "ground_truth": {
+        "biomarkers": [
+          {
+            "gene": "BRAF",
+            "alteration": "V600E"
+          }
+        ],
+        "diagnosis": {
+          "primary_site": "skin",
+          "histology": "malignant melanoma",
+          "stage": "Stage IIIB"
+        },
+        "expected_therapies": []
+      },
+      "_meta": {
+        "cancer_type": "SKCM",
+        "mutations_raw": [
+          "BRAF V600E"
+        ],
+        "age": "56"
+      }
+    },
+    {
+      "report_id": "TCGA-BF-A1PZ",
+      "report_text": "Diagnosis: Cutaneous Melanoma. Histology: Malignant Melanoma. Stage: Stage IIB. Age: 71. Sex: Female. Molecular profiling identified a Q61R alteration in the NRAS gene. This is a de-identified clinical record from TCGA.",
+      "ground_truth": {
+        "biomarkers": [
+          {
+            "gene": "NRAS",
+            "alteration": "Q61R"
+          }
+        ],
+        "diagnosis": {
+          "primary_site": "skin",
+          "histology": "malignant melanoma",
+          "stage": "Stage IIB"
+        },
+        "expected_therapies": []
+      },
+      "_meta": {
+        "cancer_type": "SKCM",
+        "mutations_raw": [
+          "NRAS Q61R"
+        ],
+        "age": "71"
+      }
+    },
+    {
+      "report_id": "TCGA-BF-A1Q0",
+      "report_text": "Diagnosis: Cutaneous Melanoma. Histology: Malignant Melanoma. Stage: Stage IIC. Age: 80. Sex: Male. TP53 testing was positive for the E286K variant. This is a de-identified clinical record from TCGA.",
+      "ground_truth": {
+        "biomarkers": [
+          {
+            "gene": "TP53",
+            "alteration": "E286K"
+          }
+        ],
+        "diagnosis": {
+          "primary_site": "skin",
+          "histology": "malignant melanoma",
+          "stage": "Stage IIC"
+        },
+        "expected_therapies": []
+      },
+      "_meta": {
+        "cancer_type": "SKCM",
+        "mutations_raw": [
+          "TP53 E286K"
+        ],
+        "age": "80"
+      }
+    },
+    {
+      "report_id": "TCGA-BF-A3DJ",
+      "report_text": "Diagnosis: Cutaneous Melanoma. Histology: Malignant Melanoma. Stage: Stage IIIB. Age: 36. Sex: Female. Molecular profiling identified a V600E alteration in the BRAF gene. This is a de-identified clinical record from TCGA.",
+      "ground_truth": {
+        "biomarkers": [
+          {
+            "gene": "BRAF",
+            "alteration": "V600E"
+          }
+        ],
+        "diagnosis": {
+          "primary_site": "skin",
+          "histology": "malignant melanoma",
+          "stage": "Stage IIIB"
+        },
+        "expected_therapies": []
+      },
+      "_meta": {
+        "cancer_type": "SKCM",
+        "mutations_raw": [
+          "BRAF V600E"
+        ],
+        "age": "36"
+      }
+    },
+    {
+      "report_id": "TCGA-BF-A3DL",
+      "report_text": "Diagnosis: Cutaneous Melanoma. Histology: Malignant Melanoma. Stage: Stage IIIB. Age: 84. Sex: Female. BRAF testing was positive for the V600K variant. A pathogenic TP53 R196* mutation was identified on NGS panel testing. This is a de-identified clinical record from TCGA.",
+      "ground_truth": {
+        "biomarkers": [
+          {
+            "gene": "BRAF",
+            "alteration": "V600K"
+          },
+          {
+            "gene": "TP53",
+            "alteration": "R196*"
+          }
+        ],
+        "diagnosis": {
+          "primary_site": "skin",
+          "histology": "malignant melanoma",
+          "stage": "Stage IIIB"
+        },
+        "expected_therapies": []
+      },
+      "_meta": {
+        "cancer_type": "SKCM",
+        "mutations_raw": [
+          "BRAF V600K",
+          "TP53 R196*"
+        ],
+        "age": "84"
+      }
+    },
+    {
+      "report_id": "TCGA-BF-A3DM",
+      "report_text": "Diagnosis: Cutaneous Melanoma. Histology: Malignant Melanoma. Stage: Stage IIA. Age: 63. Sex: Male. Sequencing revealed a V600K substitution in BRAF. This is a de-identified clinical record from TCGA.",
+      "ground_truth": {
+        "biomarkers": [
+          {
+            "gene": "BRAF",
+            "alteration": "V600K"
+          }
+        ],
+        "diagnosis": {
+          "primary_site": "skin",
+          "histology": "malignant melanoma",
+          "stage": "Stage IIA"
+        },
+        "expected_therapies": []
+      },
+      "_meta": {
+        "cancer_type": "SKCM",
+        "mutations_raw": [
+          "BRAF V600K"
+        ],
+        "age": "63"
+      }
+    },
+    {
+      "report_id": "TCGA-BF-A3DN",
+      "report_text": "Diagnosis: Cutaneous Melanoma. Histology: Malignant Melanoma. Stage: Stage IIIC. Age: 81. Sex: Female. Sequencing revealed a V600E substitution in BRAF. This is a de-identified clinical record from TCGA.",
+      "ground_truth": {
+        "biomarkers": [
+          {
+            "gene": "BRAF",
+            "alteration": "V600E"
+          }
+        ],
+        "diagnosis": {
+          "primary_site": "skin",
+          "histology": "malignant melanoma",
+          "stage": "Stage IIIC"
+        },
+        "expected_therapies": []
+      },
+      "_meta": {
+        "cancer_type": "SKCM",
+        "mutations_raw": [
+          "BRAF V600E"
+        ],
+        "age": "81"
+      }
+    },
+    {
+      "report_id": "TCGA-BF-A5EO",
+      "report_text": "Diagnosis: Cutaneous Melanoma. Histology: Malignant Melanoma. Stage: Stage IIC. Age: 65. Sex: Male. A pathogenic NRAS Q61K mutation was identified on NGS panel testing. Molecular profiling identified a Q61R alteration in the NRAS gene. This is a de-identified clinical record from TCGA.",
+      "ground_truth": {
+        "biomarkers": [
+          {
+            "gene": "NRAS",
+            "alteration": "Q61K"
+          },
+          {
+            "gene": "NRAS",
+            "alteration": "Q61R"
+          }
+        ],
+        "diagnosis": {
+          "primary_site": "skin",
+          "histology": "malignant melanoma",
+          "stage": "Stage IIC"
+        },
+        "expected_therapies": []
+      },
+      "_meta": {
+        "cancer_type": "SKCM",
+        "mutations_raw": [
+          "NRAS Q61K",
+          "NRAS Q61R"
+        ],
+        "age": "65"
+      }
+    },
+    {
+      "report_id": "TCGA-BF-A5EP",
+      "report_text": "Diagnosis: Cutaneous Melanoma. Histology: Malignant Melanoma. Stage: Stage IIIC. Age: 75. Sex: Female. This is a de-identified clinical record from TCGA.",
+      "ground_truth": {
+        "biomarkers": [],
+        "diagnosis": {
+          "primary_site": "skin",
+          "histology": "malignant melanoma",
+          "stage": "Stage IIIC"
+        },
+        "expected_therapies": []
+      },
+      "_meta": {
+        "cancer_type": "SKCM",
+        "mutations_raw": [],
+        "age": "75"
+      }
+    },
+    {
+      "report_id": "TCGA-BF-A5EQ",
+      "report_text": "Diagnosis: Cutaneous Melanoma. Histology: Malignant Melanoma. Stage: Stage IIC. Age: 63. Sex: Male. Sequencing revealed a V600K substitution in BRAF. This is a de-identified clinical record from TCGA.",
+      "ground_truth": {
+        "biomarkers": [
+          {
+            "gene": "BRAF",
+            "alteration": "V600K"
+          }
+        ],
+        "diagnosis": {
+          "primary_site": "skin",
+          "histology": "malignant melanoma",
+          "stage": "Stage IIC"
+        },
+        "expected_therapies": []
+      },
+      "_meta": {
+        "cancer_type": "SKCM",
+        "mutations_raw": [
+          "BRAF V600K"
+        ],
+        "age": "63"
+      }
+    },
+    {
+      "report_id": "TCGA-BF-A5ER",
+      "report_text": "Diagnosis: Cutaneous Melanoma. Histology: Malignant Melanoma. Stage: Stage IIC. Age: 63. Sex: Male. A pathogenic BRAF V600K mutation was identified on NGS panel testing. This is a de-identified clinical record from TCGA.",
+      "ground_truth": {
+        "biomarkers": [
+          {
+            "gene": "BRAF",
+            "alteration": "V600K"
+          }
+        ],
+        "diagnosis": {
+          "primary_site": "skin",
+          "histology": "malignant melanoma",
+          "stage": "Stage IIC"
+        },
+        "expected_therapies": []
+      },
+      "_meta": {
+        "cancer_type": "SKCM",
+        "mutations_raw": [
+          "BRAF V600K"
+        ],
+        "age": "63"
+      }
+    },
+    {
+      "report_id": "TCGA-BF-A5ES",
+      "report_text": "Diagnosis: Cutaneous Melanoma. Histology: Malignant Melanoma. Stage: Stage IIC. Age: 76. Sex: Female. Sequencing revealed a L576P substitution in KIT. This is a de-identified clinical record from TCGA.",
+      "ground_truth": {
+        "biomarkers": [
+          {
+            "gene": "KIT",
+            "alteration": "L576P"
+          }
+        ],
+        "diagnosis": {
+          "primary_site": "skin",
+          "histology": "malignant melanoma",
+          "stage": "Stage IIC"
+        },
+        "expected_therapies": []
+      },
+      "_meta": {
+        "cancer_type": "SKCM",
+        "mutations_raw": [
+          "KIT L576P"
+        ],
+        "age": "76"
+      }
+    },
+    {
+      "report_id": "TCGA-BF-AAP0",
+      "report_text": "Diagnosis: Cutaneous Melanoma. Histology: Malignant Melanoma. Stage: Stage IV. Age: 40. Sex: Female. BRAF testing was positive for the V600K variant. This is a de-identified clinical record from TCGA.",
+      "ground_truth": {
+        "biomarkers": [
+          {
+            "gene": "BRAF",
+            "alteration": "V600K"
+          }
+        ],
+        "diagnosis": {
+          "primary_site": "skin",
+          "histology": "malignant melanoma",
+          "stage": "Stage IV"
+        },
+        "expected_therapies": []
+      },
+      "_meta": {
+        "cancer_type": "SKCM",
+        "mutations_raw": [
+          "BRAF V600K"
+        ],
+        "age": "40"
+      }
+    },
+    {
+      "report_id": "TCGA-D3-A1Q1",
+      "report_text": "Diagnosis: Cutaneous Melanoma. Histology: Malignant Melanoma. Stage: Stage IIIC. Age: 79. Sex: Female. NRAS testing was positive for the G12R variant. This is a de-identified clinical record from TCGA.",
+      "ground_truth": {
+        "biomarkers": [
+          {
+            "gene": "NRAS",
+            "alteration": "G12R"
+          }
+        ],
+        "diagnosis": {
+          "primary_site": "skin",
+          "histology": "malignant melanoma",
+          "stage": "Stage IIIC"
+        },
+        "expected_therapies": []
+      },
+      "_meta": {
+        "cancer_type": "SKCM",
+        "mutations_raw": [
+          "NRAS G12R"
+        ],
+        "age": "79"
+      }
+    },
+    {
+      "report_id": "TCGA-D3-A1Q3",
+      "report_text": "Diagnosis: Cutaneous Melanoma. Histology: Malignant Melanoma. Stage: Stage IIC. Age: 64. Sex: Male. Molecular profiling identified a K642E alteration in the KIT gene. This is a de-identified clinical record from TCGA.",
+      "ground_truth": {
+        "biomarkers": [
+          {
+            "gene": "KIT",
+            "alteration": "K642E"
+          }
+        ],
+        "diagnosis": {
+          "primary_site": "skin",
+          "histology": "malignant melanoma",
+          "stage": "Stage IIC"
+        },
+        "expected_therapies": []
+      },
+      "_meta": {
+        "cancer_type": "SKCM",
+        "mutations_raw": [
+          "KIT K642E"
+        ],
+        "age": "64"
+      }
+    }
+  ],
+  "_source": "cBioPortal TCGA clinical data"
+}

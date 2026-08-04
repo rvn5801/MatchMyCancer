@@ -23,6 +23,13 @@ build/
 uploads/
 chroma_data/
 app.db
+
+# Evaluation prediction cache — regenerable, one LLM call per report
+*.predictions.json
+
+# Downloaded TCGA pathology report PDFs (re-fetchable from the GDC API)
+pathology_reports/
+pathology_reports_scanned/
 dev.db
 
 # Misc
