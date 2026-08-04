@@ -108,8 +108,11 @@ class CancerDiagnosis(BaseModel):
 
     primary_site: Optional[str] = Field(
         None,
-        description="Anatomic site of primary tumor",
-        examples=["lung", "breast", "colon", "pancreas"],
+        description=(
+            "Anatomic site where the tumor ORIGINATED, not where the specimen "
+            "was taken. A lymph node biopsy of melanoma is 'skin'."
+        ),
+        examples=["lung", "breast", "colon", "pancreas", "skin"],
     )
     histology: Optional[str] = Field(
         None,
@@ -118,8 +121,13 @@ class CancerDiagnosis(BaseModel):
     )
     stage: Optional[str] = Field(
         None,
-        description="Disease stage (AJCC or other staging system)",
-        examples=["Stage IV", "T2N1M0", "Stage IIIB"],
+        description="AJCC stage group only — never TNM (that goes in tnm)",
+        examples=["Stage IV", "Stage IIIB", "Stage IB"],
+    )
+    tnm: Optional[str] = Field(
+        None,
+        description="TNM classification as reported, space-separated",
+        examples=["pT4 pN2 M0", "pT1 pN0 M0", "T2N1M0"],
     )
     grade: Optional[str] = Field(
         None,

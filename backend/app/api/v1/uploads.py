@@ -12,14 +12,12 @@ Interview-ready concepts demonstrated:
 
 import uuid
 from fastapi import APIRouter, File, HTTPException, UploadFile, Request
-from slowapi import Limiter
-from slowapi.util import get_remote_address
 
+from app.core.limiter import limiter
 from app.models.document import DocumentMetadata, UploadResponse
 from app.pipelines.document_pipeline import process_document
 
 router = APIRouter()
-limiter = Limiter(key_func=get_remote_address)
 
 # Set for O(1) membership testing
 ALLOWED_TYPES: set[str] = {

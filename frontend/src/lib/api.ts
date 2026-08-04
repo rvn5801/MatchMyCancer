@@ -1,5 +1,9 @@
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
+// Backend rate-limits analysis per IP; slowapi's raw body isn't user-friendly.
+const RATE_LIMIT_MESSAGE =
+  "You've reached the analysis limit for this hour. Please try again later.";
+
 // ── Types ──────────────────────────────────────────────────────────────────
 
 export interface Biomarker {
@@ -22,6 +26,7 @@ export interface CancerDiagnosis {
   primary_site: string | null;
   histology: string | null;
   stage: string | null;
+  tnm: string | null;
   grade: string | null;
   laterality: string | null;
   raw_text: string;
@@ -166,6 +171,7 @@ export async function analyzeReport(
     body: JSON.stringify({ document_text: documentText }),
   });
   if (!res.ok) {
+    if (res.status === 429) throw new Error(RATE_LIMIT_MESSAGE);
     const err = await res.json().catch(() => ({}));
     throw new Error(err.detail || `Analysis failed: ${res.status}`);
   }
@@ -181,6 +187,7 @@ export async function* analyzeStream(
     body: JSON.stringify({ text: documentText }),
   });
   if (!res.ok) {
+    if (res.status === 429) throw new Error(RATE_LIMIT_MESSAGE);
     const err = await res.json().catch(() => ({}));
     throw new Error(err.detail || `Stream failed: ${res.status}`);
   }

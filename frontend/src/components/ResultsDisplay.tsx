@@ -187,6 +187,7 @@ export function ResultsDisplay({ data, onReset }: ResultsDisplayProps) {
       if (d.primary_site) lines.push(`  Site: ${d.primary_site}`);
       if (d.histology) lines.push(`  Histology: ${d.histology}`);
       if (d.stage) lines.push(`  Stage: ${d.stage}`);
+      if (d.tnm) lines.push(`  TNM: ${d.tnm}`);
       if (d.grade) lines.push(`  Grade: ${d.grade}`);
       lines.push("");
     }

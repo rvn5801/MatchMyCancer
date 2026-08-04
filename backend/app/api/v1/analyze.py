@@ -4,12 +4,13 @@ POST /api/v1/analyze — runs the complete MatchMyCancer pipeline synchronously.
 GET  /api/v1/analyze/stream — SSE stream of the same pipeline.
 """
 
+import json
 import logging
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Request
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field
 
-from app.core.config import settings
+from app.core.limiter import limiter
 from app.core.metrics import record_analysis
 from app.models.biomarker import ClinicalExtraction
 from app.pipelines.clinical_extraction import extract_clinical_data
@@ -24,6 +25,42 @@ from app.pipelines.trial_matcher import find_matching_trials
 logger = logging.getLogger(__name__)
 
 router = APIRouter()
+
+# Each analysis costs ~10 LLM calls, so this endpoint is the spend risk.
+ANALYZE_RATE_LIMIT = "10/hour"
+
+# Words that already name a malignancy, so " cancer" shouldn't be appended.
+_CANCER_TERMS = (
+    "cancer", "carcinoma", "melanoma", "sarcoma", "lymphoma",
+    "leukemia", "myeloma", "glioma", "blastoma", "mesothelioma",
+)
+
+
+def _build_condition(diagnosis) -> str:
+    """Build the ClinicalTrials.gov condition query from a diagnosis.
+
+    Uses histology as well as site: reports that describe only a metastatic
+    specimen often have no stated primary site, and querying a bare "cancer"
+    returns noise. "melanoma" is a far better query than "cancer", and
+    "lung adenocarcinoma" better than "lung".
+
+    ponytail: string concatenation, no ontology mapping. Swap in an ICD-O/
+    MeSH lookup if condition matching needs to be precise.
+    """
+    site = ((diagnosis.primary_site if diagnosis else None) or "").strip()
+    hist = ((diagnosis.histology if diagnosis else None) or "").strip()
+
+    if site and hist:
+        # Avoid "lung lung adenocarcinoma" when histology already names the site
+        condition = hist if site.lower() in hist.lower() else f"{site} {hist}"
+    else:
+        condition = hist or site
+
+    if not condition:
+        return "cancer"
+    if not any(term in condition.lower() for term in _CANCER_TERMS):
+        condition = f"{condition} cancer"
+    return condition
 
 
 class AnalyzeRequest(BaseModel):
@@ -63,13 +100,7 @@ async def _run_pipeline(text: str):
 
     therapies = match_therapies(extraction.biomarkers)
 
-    condition = (
-        extraction.diagnosis.primary_site
-        if extraction.diagnosis and extraction.diagnosis.primary_site
-        else "cancer"
-    )
-    if "cancer" not in condition.lower():
-        condition = f"{condition} cancer"
+    condition = _build_condition(extraction.diagnosis)
 
     trials_raw = await find_matching_trials(
         biomarkers=extraction.biomarkers,
@@ -121,18 +152,19 @@ async def _run_pipeline(text: str):
 
 
 @router.post("/analyze", response_model=AnalyzeResponse)
-async def analyze_report(request: AnalyzeRequest):
+@limiter.limit(ANALYZE_RATE_LIMIT)
+async def analyze_report(request: Request, body: AnalyzeRequest):
     """Run the full MatchMyCancer pipeline on document text."""
-    result = await _run_pipeline(request.document_text)
+    result = await _run_pipeline(body.document_text)
     return AnalyzeResponse(**result)
 
 
 @router.post("/analyze/stream")
-async def analyze_stream(request: StreamRequest):
+@limiter.limit(ANALYZE_RATE_LIMIT)
+async def analyze_stream(request: Request, body: StreamRequest):
     """SSE stream of the pipeline execution."""
     async def event_generator():
-        import json
-        text = request.text
+        text = body.text
         try:
             # Yield progress events
             yield f"data: {json.dumps({'stage': 'extract', 'message': 'Extracting biomarkers...'})}\n\n"
@@ -147,13 +179,7 @@ async def analyze_stream(request: StreamRequest):
             therapies = match_therapies(extraction.biomarkers)
             yield f"data: {json.dumps({'stage': 'trial', 'message': 'Searching clinical trials...', 'therapies': therapies})}\n\n"
 
-            condition = (
-                extraction.diagnosis.primary_site
-                if extraction.diagnosis and extraction.diagnosis.primary_site
-                else "cancer"
-            )
-            if "cancer" not in condition.lower():
-                condition = f"{condition} cancer"
+            condition = _build_condition(extraction.diagnosis)
 
             trials_raw = await find_matching_trials(
                 biomarkers=extraction.biomarkers,
@@ -195,9 +221,10 @@ async def analyze_stream(request: StreamRequest):
             await record_analysis()
             yield f"data: {json.dumps({'stage': 'complete', 'extraction': extraction_dict, 'explanations': explanations, 'clinical_summary': summary, 'therapies': therapies, 'trials': trials, 'guardrails': guardrails, 'meta': meta})}\n\n"
 
-        except ValueError as e:
-            yield f"data: {json.dumps({'stage': 'error', 'message': str(e)})}\n\n"
-        except RuntimeError as e:
+        except Exception as e:
+            # Any escaping exception kills the stream with no error event and
+            # the UI spins forever — always emit a terminal error frame.
+            logger.exception("Analysis stream failed")
             yield f"data: {json.dumps({'stage': 'error', 'message': str(e)})}\n\n"
 
     return StreamingResponse(event_generator(), media_type="text/event-stream")

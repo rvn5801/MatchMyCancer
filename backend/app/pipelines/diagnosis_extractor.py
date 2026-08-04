@@ -38,9 +38,10 @@ DIAGNOSIS_PROMPT = """\\
 You are an oncology data extraction specialist.
 
 Extract the cancer diagnosis from this medical report. Include:
-- primary_site: anatomic site (e.g., "lung", "breast", "colon")
+- primary_site: anatomic site where the cancer ORIGINATED (e.g., "lung", "breast", "skin")
 - histology: histological type (e.g., "adenocarcinoma", "squamous cell carcinoma")
-- stage: AJCC stage or other staging if reported (e.g., "Stage IV", "T2N1M0")
+- stage: AJCC stage GROUP only (e.g., "Stage IV", "Stage IIIB") — never TNM
+- tnm: TNM classification if reported, spaced (e.g., "pT4 pN2 M0")
 - grade: tumor differentiation grade if reported
 - laterality: left, right, or bilateral if specified
 - raw_text: the exact text from the report that supports the diagnosis
@@ -49,6 +50,14 @@ Rules:
 1. Only extract what is explicitly stated — never infer.
 2. If a field is not mentioned, leave it null.
 3. Use standard medical terminology (lowercase for site, standard histology names).
+4. primary_site is the site of ORIGIN, not the site the specimen was taken from.
+   A biopsy of a lymph node, liver, or other metastasis still has the primary
+   site of the originating tumor. Melanoma found in an axillary node is
+   primary_site "skin", not "axillary" or "lymph node". If the report gives
+   only a metastatic specimen and never states the origin, leave it null.
+5. Keep stage and TNM separate. "pT2 pN1 M0, Stage IIB" means
+   stage="Stage IIB" and tnm="pT2 pN1 M0". If only TNM is reported, set
+   tnm and leave stage null — do not put TNM in the stage field.
 """
 
 _llm: ChatOpenAI | None = None
