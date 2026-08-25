@@ -2,7 +2,7 @@
 //
 // Measured on 8/8 real de-identified TCGA pathology reports: surgical
 // pathology reports contain zero molecular content. The extraction is
-// correct — the document simply doesn't hold that data, because genomic
+// correct - the document simply doesn't hold that data, because genomic
 // testing is reported separately.
 //
 // So this is a RESULT, not an error state. Deliberately styled calm (slate,
@@ -16,7 +16,7 @@ interface Props {
   diagnosis: CancerDiagnosis | null;
 }
 
-/** True when we extracted nothing at all — a different problem to explain. */
+/** True when we extracted nothing at all - a different problem to explain. */
 function isEmptyDiagnosis(d: CancerDiagnosis | null): boolean {
   if (!d) return true;
   return !(d.primary_site || d.histology || d.stage || d.tnm || d.grade);
@@ -37,7 +37,7 @@ export default function NoBiomarkersNotice({ diagnosis }: Props) {
           </h2>
           <p className="text-sm text-slate-500 mt-0.5">
             This reads like a pathology report, which describes the tumour
-            itself — its type, size, grade and margins.
+            itself - its type, size, grade and margins.
           </p>
         </div>
       </div>
@@ -47,7 +47,7 @@ export default function NoBiomarkersNotice({ diagnosis }: Props) {
           Biomarker and genomic testing is normally reported{" "}
           <strong className="text-slate-800">separately</strong>. It is a
           different test run on the same tissue, and the results come back as
-          their own document — often titled{" "}
+          their own document - often titled{" "}
           <em>Molecular Pathology</em>, <em>Next-Generation Sequencing</em>, or{" "}
           <em>Comprehensive Genomic Profiling</em>, or named after the
           laboratory that performed it.
@@ -82,7 +82,7 @@ export default function NoBiomarkersNotice({ diagnosis }: Props) {
   );
 }
 
-/** Nothing extracted at all — likely a scan quality or wrong-file problem. */
+/** Nothing extracted at all - likely a scan quality or wrong-file problem. */
 function UnreadableNotice() {
   return (
     <section className="bg-white rounded-xl border border-slate-200 p-6">
@@ -102,17 +102,17 @@ function UnreadableNotice() {
 
       <ul className="mt-5 space-y-2 text-sm text-slate-600 leading-relaxed">
         <li>
-          <strong className="text-slate-800">Scan quality</strong> — faint or
+          <strong className="text-slate-800">Scan quality</strong> - faint or
           skewed scans are hard to read. A clearer photo or a straighter scan
           often works.
         </li>
         <li>
-          <strong className="text-slate-800">Document type</strong> — billing
+          <strong className="text-slate-800">Document type</strong> - billing
           statements, appointment letters and imaging orders don&apos;t contain
           the clinical detail this looks for.
         </li>
         <li>
-          <strong className="text-slate-800">Try pasting the text</strong> — if
+          <strong className="text-slate-800">Try pasting the text</strong> - if
           you can select and copy text from the PDF, pasting it directly avoids
           the scanning step entirely.
         </li>

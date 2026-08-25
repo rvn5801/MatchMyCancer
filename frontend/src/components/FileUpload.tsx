@@ -106,7 +106,7 @@ export default function FileUpload({ onTextReady, isAnalyzing }: FileUploadProps
               Drop your oncology report here
             </p>
             <p className="text-sm text-slate-400">
-              PDF, JPEG, PNG, or TIFF — or click to browse
+              PDF, JPEG, PNG, or TIFF, or click to browse
             </p>
           </div>
         )}

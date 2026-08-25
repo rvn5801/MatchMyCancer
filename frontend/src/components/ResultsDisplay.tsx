@@ -172,7 +172,7 @@ export function ResultsDisplay({ data, onReset }: ResultsDisplayProps) {
   const { extraction, explanations, clinical_summary, therapies, trials, guardrails, meta } = data;
   const biomarkers = extraction.biomarkers.biomarkers;
   const tumors = extraction.tumors ?? [];
-  // Only split the view when there is genuinely more than one tumour — a
+  // Only split the view when there is genuinely more than one tumour - a
   // single-tumour report reads better as one diagnosis card.
   const multiTumor = tumors.length > 1;
   const [showAllTrials, setShowAllTrials] = useState(false);
@@ -180,8 +180,8 @@ export function ResultsDisplay({ data, onReset }: ResultsDisplayProps) {
   const handleDownload = () => {
     const lines: string[] = [];
     const rule = (c: string, n = 60) => c.repeat(n);
-    lines.push(rule("="), "MatchMyCancer.ai — Oncology Report Analysis", rule("="), "");
-    lines.push(clinical_summary, "");
+    lines.push(rule("="), "MatchMyCancer.ai - Oncology Report Analysis", rule("="), "");
+    lines.push(clinical_summary.replace(/\s*—\s*/g, " - "), "");
 
     if (biomarkers.length > 0) {
       lines.push(rule("-", 40), "BIOMARKERS FOUND", rule("-", 40));
@@ -208,7 +208,7 @@ export function ResultsDisplay({ data, onReset }: ResultsDisplayProps) {
       lines.push(rule("-", 40), "FDA-APPROVED THERAPIES", rule("-", 40));
       therapies.forEach((t) => {
         lines.push(`  ${t.drug} (${t.brand})`);
-        lines.push(`  Targets: ${t.biomarker} — ${t.alteration}`);
+        lines.push(`  Targets: ${t.biomarker} - ${t.alteration}`);
         lines.push(`  Cancer type: ${t.cancer_type} | FDA approval: ${t.fda_approval_year} | Match: ${t.match_quality}`);
         lines.push("");
       });
@@ -226,8 +226,15 @@ export function ResultsDisplay({ data, onReset }: ResultsDisplayProps) {
     }
 
     lines.push(rule("-", 40));
-    lines.push(`ANALYSIS CONFIDENCE: ${Math.round(guardrails.confidence_score * 100)}%`);
-    lines.push(`Biomarkers verified: ${guardrails.source_verification.verified}/${guardrails.source_verification.total}`, "");
+    // Same rule as the on-screen panel: no biomarkers means there was nothing
+    // to verify, and printing "80% confidence" next to "0/0 verified" is a
+    // fabricated number a patient might carry into an appointment.
+    if (guardrails.source_verification.total > 0) {
+      lines.push(`ANALYSIS CONFIDENCE: ${Math.round(guardrails.confidence_score * 100)}%`);
+      lines.push(`Biomarkers verified: ${guardrails.source_verification.verified}/${guardrails.source_verification.total}`, "");
+    } else {
+      lines.push("No biomarkers were found in this document, so there was", "nothing to verify against the source text.", "");
+    }
     lines.push(rule("="), "DISCLAIMER: AI-generated analysis for educational purposes only.", "Discuss all findings with your oncology team.", rule("="));
 
     // Open a print-friendly page and let the browser save it as PDF —
@@ -364,7 +371,7 @@ export function ResultsDisplay({ data, onReset }: ResultsDisplayProps) {
                       </div>
                       <Badge tone={t.match_quality === "exact" ? "teal" : "amber"}>{t.match_quality}</Badge>
                     </div>
-                    <p className="text-sm text-slate-600 mb-1">Targets: <span className="font-medium">{t.biomarker}</span> — {t.alteration}</p>
+                    <p className="text-sm text-slate-600 mb-1">Targets: <span className="font-medium">{t.biomarker}</span> - {t.alteration}</p>
                     <p className="text-sm text-slate-600 mb-1">Cancer: <span className="font-medium">{t.cancer_type}</span></p>
                     <p className="text-xs text-slate-400">FDA approved {t.fda_approval_year} · {t.source}</p>
                     {t.trace && (
@@ -377,7 +384,7 @@ export function ResultsDisplay({ data, onReset }: ResultsDisplayProps) {
                         </ol>
                         {t.trace.sources.length > 0 && (
                           <p className="mt-2 text-xs text-slate-400">
-                            Source: {t.trace.sources.map((s) => `${s.source_name} — ${s.relevance}`).join("; ")}
+                            Source: {t.trace.sources.map((s) => `${s.source_name} - ${s.relevance}`).join("; ")}
                           </p>
                         )}
                       </details>
@@ -514,7 +521,7 @@ export function ResultsDisplay({ data, onReset }: ResultsDisplayProps) {
 
 // ── Small presentational helpers ──────────────────────────────────
 
-/** Subtitle listing only what was found — never a row of zeros. */
+/** Subtitle listing only what was found - never a row of zeros. */
 function summarizeCounts(meta: AnalyzeResponse["meta"]): string {
   const parts = [
     [meta.biomarkers_found, "biomarker"],
@@ -528,7 +535,7 @@ function summarizeCounts(meta: AnalyzeResponse["meta"]): string {
 
   return found.length > 0
     ? found.join(" · ")
-    : "Diagnosis details extracted — see below";
+    : "Diagnosis details extracted, see below";
 }
 
 function SectionTitle({ icon, title, small }: { icon: Parameters<typeof Icon>[0]["name"]; title: string; small?: boolean }) {

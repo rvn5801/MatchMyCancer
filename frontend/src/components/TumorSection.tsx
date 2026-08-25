@@ -81,11 +81,11 @@ function describeBiomarker(bm: Biomarker): string {
     case "positive":
       return "Detected";
     case "negative":
-      return "Not detected — this result rules out therapies targeting it";
+      return "Not detected. This result rules out therapies targeting it";
     case "equivocal":
-      return "Equivocal — confirmatory testing needed";
+      return "Equivocal. Confirmatory testing needed";
     case "not_tested":
-      return "Not assessed in this report — worth asking whether it applies to you";
+      return "Not assessed in this report. Worth asking whether it applies to you";
     default:
       return "Result not stated in this report";
   }
@@ -120,7 +120,7 @@ export function BiomarkerCard({
       </div>
       <p className="text-slate-600 text-sm mb-2">
         {describeBiomarker(bm)}
-        {bm.significance && ` — ${bm.significance}`}
+        {bm.significance && ` (${bm.significance})`}
       </p>
       {bm.test_method && (
         <p className="text-xs text-slate-400 mb-2">Method: {bm.test_method}</p>

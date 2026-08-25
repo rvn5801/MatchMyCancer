@@ -69,19 +69,19 @@ export function openQuestionSheet(data: AnalyzeResponse): boolean {
     for (const t of tumors) {
       const bits = [t.histology, t.laterality, t.tnm ?? t.stage, t.grade]
         .filter(Boolean)
-        .join(" · ");
+        .join(", ");
       summaryLines.push(`${t.label}: ${bits}`);
     }
   } else if (dx) {
     const bits = [dx.primary_site, dx.histology, dx.stage ?? dx.tnm, dx.grade]
       .filter(Boolean)
-      .join(" · ");
+      .join(", ");
     if (bits) summaryLines.push(bits);
   }
 
   const questions = buildQuestions(data);
 
-  const html = `<!doctype html><html><head><title>Questions for my appointment</title>
+  const html = `<!doctype html><html><head><meta charset="utf-8"><title>Questions for my appointment</title>
 <style>
   body { font-family: Georgia, serif; color: #1e293b; max-width: 44rem; margin: 2rem auto; padding: 0 1.5rem; line-height: 1.5; }
   h1 { font-size: 1.4rem; margin-bottom: 0.25rem; }
@@ -99,13 +99,15 @@ ${summaryLines.length ? `<div class="dx"><strong>From my report:</strong><br>${s
 <ol>
 ${questions.map((q) => `<li>${esc(q)}<div class="lines"></div><div class="lines"></div></li>`).join("\n")}
 </ol>
-<div class="foot">This sheet was generated from an AI reading of a medical report, for discussion purposes only. It is not medical advice &mdash; your oncology team's guidance always comes first.</div>
+<div class="foot">This sheet was generated from an AI reading of a medical report, for discussion purposes only. It is not medical advice. Your oncology team's guidance always comes first.</div>
 <p class="noprint"><button onclick="window.print()">Print</button></p>
 </body></html>`;
 
   // Blob URL instead of document.write: no script-injection surface, and the
   // page is a plain static document the browser owns.
-  const url = URL.createObjectURL(new Blob([html], { type: "text/html" }));
+  const url = URL.createObjectURL(
+    new Blob([html], { type: "text/html;charset=utf-8" })
+  );
   const w = window.open(url, "_blank", "width=820,height=640");
   if (!w) {
     URL.revokeObjectURL(url);
