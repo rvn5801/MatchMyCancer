@@ -4,6 +4,12 @@ import { useState, useEffect } from "react";
 import type { AnalyzeResponse, StreamEvent } from "@/lib/api";
 import { analyzeStream } from "@/lib/api";
 import Icon from "@/components/Icon";
+import NoBiomarkersNotice from "@/components/NoBiomarkersNotice";
+import TumorSection, {
+  Badge,
+  BiomarkerCard,
+  TONES,
+} from "@/components/TumorSection";
 
 // ── Streaming progress + results orchestrator ─────────────────────
 
@@ -163,6 +169,10 @@ interface ResultsDisplayProps {
 export function ResultsDisplay({ data, onReset }: ResultsDisplayProps) {
   const { extraction, explanations, clinical_summary, therapies, trials, guardrails, meta } = data;
   const biomarkers = extraction.biomarkers.biomarkers;
+  const tumors = extraction.tumors ?? [];
+  // Only split the view when there is genuinely more than one tumour — a
+  // single-tumour report reads better as one diagnosis card.
+  const multiTumor = tumors.length > 1;
   const [showAllTrials, setShowAllTrials] = useState(false);
 
   const handleDownload = () => {
@@ -249,8 +259,11 @@ export function ResultsDisplay({ data, onReset }: ResultsDisplayProps) {
           <h1 className="text-2xl font-semibold tracking-tight text-slate-800">
             Analysis complete
           </h1>
+          {/* Only count what was actually found. "0 biomarkers · 0 therapies ·
+              0 trials" reads as a failure tally on a pathology report, where
+              zero is the correct and expected answer. */}
           <p className="text-slate-500 text-sm mt-0.5">
-            {meta.biomarkers_found} biomarkers · {meta.therapies_matched} therapies · {meta.trials_found} trials
+            {summarizeCounts(meta)}
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -272,53 +285,58 @@ export function ResultsDisplay({ data, onReset }: ResultsDisplayProps) {
       {/* ── Two-column: main + sticky rail ─────────────────────── */}
       <div className="grid lg:grid-cols-[1fr_320px] gap-6 items-start">
         <div className="space-y-6 min-w-0">
-          {/* Biomarkers */}
-          {biomarkers.length > 0 && (
-            <section>
-              <SectionTitle icon="dna" title={`Biomarkers found (${biomarkers.length})`} />
-              <div className="grid gap-4 sm:grid-cols-2">
-                {biomarkers.map((bm, idx) => {
-                  const exp = explanations.find((e) => e.gene === bm.gene);
-                  return (
-                    <div key={idx} className="bg-white rounded-xl p-5 border border-slate-200">
-                      <div className="flex items-start justify-between mb-2">
-                        <span className="text-xl font-bold text-teal-700">{bm.gene}</span>
-                        <span className="text-xs px-2 py-0.5 bg-slate-100 text-slate-600 rounded-full">
-                          {bm.alteration_type || "alteration"}
-                        </span>
-                      </div>
-                      <p className="text-slate-600 text-sm mb-2">
-                        {bm.alteration || "Alteration detected"}
-                        {bm.significance && ` — ${bm.significance}`}
-                      </p>
-                      {bm.test_method && (
-                        <p className="text-xs text-slate-400 mb-2">Method: {bm.test_method}</p>
-                      )}
-                      {exp && (
-                        <details className="text-sm">
-                          <summary className="text-teal-600 cursor-pointer">Explanation</summary>
-                          <p className="text-slate-600 mt-1.5 leading-relaxed">{exp.explanation}</p>
-                        </details>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-            </section>
+          {/* No biomarkers is the normal outcome for a pathology report, so it
+              gets an explanation rather than an absent section. */}
+          {biomarkers.length === 0 && (
+            <NoBiomarkersNotice diagnosis={extraction.diagnosis} />
           )}
 
-          {/* Diagnosis */}
-          {extraction.diagnosis && (
-            <section>
-              <SectionTitle icon="cross" title="Diagnosis" />
-              <div className="bg-white rounded-xl p-5 border border-slate-200 grid gap-3 sm:grid-cols-2">
-                {extraction.diagnosis.primary_site && <InfoTile label="Primary site" value={extraction.diagnosis.primary_site} />}
-                {extraction.diagnosis.histology && <InfoTile label="Histology" value={extraction.diagnosis.histology} />}
-                {extraction.diagnosis.stage && <InfoTile label="Stage" value={extraction.diagnosis.stage} />}
-                {extraction.diagnosis.grade && <InfoTile label="Grade" value={extraction.diagnosis.grade} />}
-                {extraction.diagnosis.laterality && <InfoTile label="Laterality" value={extraction.diagnosis.laterality} />}
-              </div>
-            </section>
+          {/* Several tumours: staging and biomarkers grouped per tumour, so a
+              HER2 result is never shown detached from the breast it came from. */}
+          {multiTumor ? (
+            <TumorSection
+              tumors={tumors}
+              biomarkers={biomarkers}
+              explanations={explanations}
+              dominantLabel={
+                tumors.find(
+                  (t) =>
+                    t.tnm === extraction.diagnosis?.tnm &&
+                    t.laterality === extraction.diagnosis?.laterality
+                )?.label
+              }
+            />
+          ) : (
+            <>
+              {biomarkers.length > 0 && (
+                <section>
+                  <SectionTitle icon="dna" title={`Biomarkers found (${biomarkers.length})`} />
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    {biomarkers.map((bm, idx) => (
+                      <BiomarkerCard
+                        key={idx}
+                        bm={bm}
+                        explanation={explanations.find((e) => e.gene === bm.gene)}
+                      />
+                    ))}
+                  </div>
+                </section>
+              )}
+
+              {extraction.diagnosis && (
+                <section>
+                  <SectionTitle icon="cross" title="Diagnosis" />
+                  <div className="bg-white rounded-xl p-5 border border-slate-200 grid gap-3 sm:grid-cols-2">
+                    {extraction.diagnosis.primary_site && <InfoTile label="Primary site" value={extraction.diagnosis.primary_site} />}
+                    {extraction.diagnosis.histology && <InfoTile label="Histology" value={extraction.diagnosis.histology} />}
+                    {extraction.diagnosis.stage && <InfoTile label="Stage" value={extraction.diagnosis.stage} />}
+                    {extraction.diagnosis.tnm && <InfoTile label="TNM" value={extraction.diagnosis.tnm} />}
+                    {extraction.diagnosis.grade && <InfoTile label="Grade" value={extraction.diagnosis.grade} />}
+                    {extraction.diagnosis.laterality && <InfoTile label="Laterality" value={extraction.diagnosis.laterality} />}
+                  </div>
+                </section>
+              )}
+            </>
           )}
 
           {/* Therapies */}
@@ -431,18 +449,31 @@ export function ResultsDisplay({ data, onReset }: ResultsDisplayProps) {
           </section>
 
           <section className="bg-white rounded-xl p-5 border border-slate-200">
-            <SectionTitle icon="shield" title="Confidence" small />
-            <ConfidenceMeter score={guardrails.confidence_score} />
-            <div className="mt-3 text-sm text-slate-600">
-              <div className="flex justify-between py-1 border-t border-slate-100">
-                <span>Biomarkers verified</span>
-                <span className="font-medium">{guardrails.source_verification.verified}/{guardrails.source_verification.total}</span>
-              </div>
-              <div className="flex justify-between py-1 border-t border-slate-100">
-                <span>Verification rate</span>
-                <span className="font-medium">{(guardrails.source_verification.rate * 100).toFixed(0)}%</span>
-              </div>
-            </div>
+            <SectionTitle icon="shield" title="Source verification" small />
+            {/* The backend defaults verification_rate to 1.0 when there is
+                nothing to verify, so a report with no biomarkers would
+                otherwise render a high confidence score next to "no
+                biomarkers found". No data is not a perfect score. */}
+            {guardrails.source_verification.total === 0 ? (
+              <p className="text-sm text-slate-500 leading-relaxed">
+                No biomarkers were found in this document, so there was nothing
+                to check against the source text.
+              </p>
+            ) : (
+              <>
+                <ConfidenceMeter score={guardrails.confidence_score} />
+                <div className="mt-3 text-sm text-slate-600">
+                  <div className="flex justify-between py-1 border-t border-slate-100">
+                    <span>Biomarkers verified</span>
+                    <span className="font-medium">{guardrails.source_verification.verified}/{guardrails.source_verification.total}</span>
+                  </div>
+                  <div className="flex justify-between py-1 border-t border-slate-100">
+                    <span>Verification rate</span>
+                    <span className="font-medium">{(guardrails.source_verification.rate * 100).toFixed(0)}%</span>
+                  </div>
+                </div>
+              </>
+            )}
             {guardrails.warnings.length > 0 && (
               <div className="mt-3 p-3 bg-amber-50 border border-amber-200 rounded-lg">
                 <p className="flex items-center gap-1.5 font-medium text-amber-800 text-sm mb-1">
@@ -468,6 +499,23 @@ export function ResultsDisplay({ data, onReset }: ResultsDisplayProps) {
 
 // ── Small presentational helpers ──────────────────────────────────
 
+/** Subtitle listing only what was found — never a row of zeros. */
+function summarizeCounts(meta: AnalyzeResponse["meta"]): string {
+  const parts = [
+    [meta.biomarkers_found, "biomarker"],
+    [meta.therapies_matched, "therapy", "therapies"],
+    [meta.trials_found, "trial"],
+  ] as const;
+
+  const found = parts
+    .filter(([n]) => n > 0)
+    .map(([n, one, many]) => `${n} ${n === 1 ? one : many ?? `${one}s`}`);
+
+  return found.length > 0
+    ? found.join(" · ")
+    : "Diagnosis details extracted — see below";
+}
+
 function SectionTitle({ icon, title, small }: { icon: Parameters<typeof Icon>[0]["name"]; title: string; small?: boolean }) {
   return (
     <h2 className={`flex items-center gap-2 font-semibold text-slate-800 ${small ? "text-sm mb-3" : "text-lg mb-4"}`}>
@@ -484,17 +532,6 @@ function InfoTile({ label, value }: { label: string; value: string }) {
       <div className="font-medium text-slate-800 capitalize">{value}</div>
     </div>
   );
-}
-
-const TONES: Record<string, string> = {
-  teal: "bg-teal-50 text-teal-700",
-  amber: "bg-amber-50 text-amber-700",
-  emerald: "bg-emerald-50 text-emerald-700",
-  rose: "bg-rose-50 text-rose-700",
-};
-
-function Badge({ tone, children }: { tone: keyof typeof TONES; children: React.ReactNode }) {
-  return <span className={`shrink-0 px-2 py-0.5 text-xs rounded-full ${TONES[tone]}`}>{children}</span>;
 }
 
 function ConfidenceMeter({ score }: { score: number }) {

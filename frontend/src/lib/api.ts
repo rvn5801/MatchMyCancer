@@ -6,12 +6,27 @@ const RATE_LIMIT_MESSAGE =
 
 // ── Types ──────────────────────────────────────────────────────────────────
 
+// What the test FOUND — distinct from what was tested. A negative result is a
+// clinical finding (rules a therapy out), not a missing value.
+// "not_tested" and "negative" are clinically opposite — a negative result ends
+// the question, an untested marker is a gap worth raising with an oncologist.
+export type BiomarkerCall =
+  | "positive"
+  | "negative"
+  | "equivocal"
+  | "not_tested"
+  | "unknown";
+
 export interface Biomarker {
   gene: string;
   alteration: string | null;
   alteration_type: string | null;
+  result: BiomarkerCall;
   significance: string | null;
   test_method: string | null;
+  // Which tumour this result belongs to, matching a TumorInstance label. Null
+  // when the report describes one tumour, or when attribution was ambiguous.
+  tumor_label: string | null;
   raw_text: string;
 }
 
@@ -30,6 +45,18 @@ export interface CancerDiagnosis {
   grade: string | null;
   laterality: string | null;
   raw_text: string;
+}
+
+// One distinct tumour. Reports routinely describe several — bilateral
+// primaries, multifocal disease, a primary plus a metastasis — and they can
+// differ in grade, stage and node status, so they must not be merged.
+export interface TumorInstance extends CancerDiagnosis {
+  label: string;
+  tumor_size: string | null;
+  nodes_examined: number | null;
+  nodes_positive: number | null;
+  lymphovascular_invasion: boolean | null;
+  margins: string | null;
 }
 
 export interface Explanation {
@@ -108,6 +135,9 @@ export interface AnalyzeResponse {
   status: string;
   extraction: {
     biomarkers: BiomarkerResult;
+    tumors: TumorInstance[];
+    // The dominant tumour, flattened for consumers expecting one diagnosis.
+    // Read `tumors` for the complete picture.
     diagnosis: CancerDiagnosis | null;
     treatment_history: unknown | null;
     raw_report_text: string | null;
