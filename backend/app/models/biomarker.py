@@ -30,10 +30,38 @@ class ConfidenceTier(str, Enum):
     LOW = "LOW"
 
 
-class Biomarker(BaseModel):
-    """A single genomic alteration found in the report.
+class BiomarkerCall(str, Enum):
+    """What the test actually found — distinct from what was tested.
 
-    Example: EGFR exon 19 deletion, BRAF V600E, ALK fusion
+    A gene symbol says a marker was examined. Only the call says what the
+    answer was. Measured on TCGA-BH-A18H (bilateral breast, HER2-negative on
+    both tumours): matching therapy on gene symbol alone returned four
+    anti-HER2 drugs for a patient who must not receive any of them.
+
+    POSITIVE:   variant detected / amplified / expression positive
+    NEGATIVE:   explicitly absent, not amplified, wild-type, IHC 0 or 1+
+    EQUIVOCAL:  borderline, awaiting reflex confirmation (HER2 IHC 2+, no FISH)
+    NOT_TESTED: the report says this marker was not assessed
+    UNKNOWN:    not stated, or extracted before this field existed
+
+    NOT_TESTED and NEGATIVE are clinically opposite and must not collapse:
+    "HER2 was negative" ends the question, "HER2 was never tested" is a gap
+    the patient should raise with their oncologist.
+    """
+
+    POSITIVE = "positive"
+    NEGATIVE = "negative"
+    EQUIVOCAL = "equivocal"
+    NOT_TESTED = "not_tested"
+    UNKNOWN = "unknown"
+
+
+class Biomarker(BaseModel):
+    """A single biomarker finding in the report.
+
+    Covers genomic alterations (EGFR exon 19 deletion, BRAF V600E, ALK fusion)
+    and protein/IHC results (ER, PR, HER2), where absence of the target is
+    itself the clinically decisive finding.
     """
 
     gene: str = Field(
@@ -51,6 +79,19 @@ class Biomarker(BaseModel):
         description="Category of alteration",
         examples=["mutation", "amplification", "fusion", "expression", "deletion"],
     )
+    result: "BiomarkerCall" = Field(
+        default=BiomarkerCall.UNKNOWN,
+        description=(
+            "Whether the target was FOUND. 'positive' when a variant is "
+            "detected, amplified, or expression is positive. 'negative' when "
+            "explicitly absent, not amplified, wild-type, or IHC 0/1+. "
+            "'equivocal' for borderline results with no confirmatory test. "
+            "'not_tested' when the report states the marker was not assessed. "
+            "Resolve reflex testing: HER2 IHC 2+ with FISH not amplified is "
+            "'negative', not 'equivocal'. A detected genomic variant such as "
+            "BRAF V600E is 'positive'."
+        ),
+    )
     significance: Optional[str] = Field(
         None,
         description="Clinical significance if stated in report",
@@ -60,6 +101,16 @@ class Biomarker(BaseModel):
         None,
         description="How this was detected",
         examples=["NGS", "IHC", "FISH", "PCR", "Sanger sequencing"],
+    )
+    tumor_label: Optional[str] = Field(
+        None,
+        description=(
+            "Which tumour this result belongs to, matching a TumorInstance "
+            "label. Required when the report describes more than one tumour — "
+            "a HER2 result means nothing without knowing which specimen it "
+            "came from."
+        ),
+        examples=["Right breast, 9 o'clock", "Part 3: left breast"],
     )
     raw_text: str = Field(
         ...,
@@ -153,6 +204,60 @@ class CancerDiagnosis(BaseModel):
     )
 
 
+class TumorInstance(CancerDiagnosis):
+    """One distinct tumour described in a report.
+
+    Reports routinely describe several: bilateral primaries, multifocal
+    disease, a primary plus a metastasis, or separately-parted specimens.
+
+    Measured on TCGA-BH-A18H — two breast primaries, Nottingham grade 2 vs 3,
+    pT1b pN0 vs pT1c pN1a, 0/1 vs 2/24 nodes — a single diagnosis object kept
+    one and silently discarded the other, and the biomarker list collapsed to
+    six unlabelled rows with no way to tell which breast each belonged to.
+    """
+
+    label: str = Field(
+        ...,
+        description=(
+            "How the report identifies this tumour. Use the report's own "
+            "wording so biomarkers can be matched to it."
+        ),
+        examples=["Right breast, 9 o'clock", "Part 3: left breast"],
+    )
+    tumor_size: Optional[str] = Field(
+        None,
+        description="Largest dimension of the invasive component, as reported",
+        examples=["0.8 cm", "13 mm"],
+    )
+    nodes_examined: Optional[int] = Field(
+        None, description="Number of regional lymph nodes examined"
+    )
+    nodes_positive: Optional[int] = Field(
+        None, description="Number of lymph nodes containing metastatic tumour"
+    )
+    lymphovascular_invasion: Optional[bool] = Field(
+        None, description="True if LVI is identified, False if explicitly absent"
+    )
+    margins: Optional[str] = Field(
+        None,
+        description="Margin status as reported",
+        examples=["negative", "positive", "uninvolved by invasive carcinoma"],
+    )
+
+
+class TumorSet(BaseModel):
+    """Container for structured LLM output — every tumour in one report."""
+
+    tumors: List[TumorInstance] = Field(
+        default_factory=list,
+        description=(
+            "One entry per distinct tumour. A bilateral case is TWO entries, "
+            "not one with laterality='bilateral'. Do not merge tumours that "
+            "have different sizes, grades, stages or node status."
+        ),
+    )
+
+
 class TreatmentHistoryEntry(BaseModel):
     """A single prior or current treatment."""
 
@@ -201,7 +306,18 @@ class ClinicalExtraction(BaseModel):
     """
 
     biomarkers: BiomarkerResult = Field(default_factory=lambda: BiomarkerResult())
-    diagnosis: Optional[CancerDiagnosis] = None
+    tumors: List[TumorInstance] = Field(
+        default_factory=list,
+        description="Every distinct tumour described in the report",
+    )
+    diagnosis: Optional[CancerDiagnosis] = Field(
+        None,
+        description=(
+            "The clinically dominant tumour, flattened for consumers that "
+            "expect one diagnosis (trial condition query, evaluator). Derived "
+            "from `tumors` — read `tumors` for the complete picture."
+        ),
+    )
     treatment_history: Optional[TreatmentHistory] = None
     raw_report_text: Optional[str] = Field(
         None,

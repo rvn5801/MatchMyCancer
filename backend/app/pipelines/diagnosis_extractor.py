@@ -9,7 +9,12 @@ import re
 from langchain_openai import ChatOpenAI
 
 from app.core.config import settings
-from app.models.biomarker import CancerDiagnosis, ConfidenceTier
+from app.models.biomarker import (
+    CancerDiagnosis,
+    ConfidenceTier,
+    TumorInstance,
+    TumorSet,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -37,14 +42,20 @@ def _find_span(report_text: str, snippet: str) -> tuple[int, int] | None:
 DIAGNOSIS_PROMPT = """\\
 You are an oncology data extraction specialist.
 
-Extract the cancer diagnosis from this medical report. Include:
+Extract EVERY distinct tumor described in this medical report. For each one:
+- label: how the report identifies it, in the report's own words
+  (e.g. "Right breast, 9 o'clock", "Part 3: left breast")
 - primary_site: anatomic site where the cancer ORIGINATED (e.g., "lung", "breast", "skin")
 - histology: histological type (e.g., "adenocarcinoma", "squamous cell carcinoma")
 - stage: AJCC stage GROUP only (e.g., "Stage IV", "Stage IIIB") — never TNM
 - tnm: TNM classification if reported, spaced (e.g., "pT4 pN2 M0")
 - grade: tumor differentiation grade if reported
 - laterality: left, right, or bilateral if specified
-- raw_text: the exact text from the report that supports the diagnosis
+- tumor_size: largest dimension of the invasive component
+- nodes_examined / nodes_positive: lymph node counts for THIS tumor
+- lymphovascular_invasion: true if identified, false if explicitly absent
+- margins: margin status as reported
+- raw_text: the exact text from the report that supports this tumor
 
 Rules:
 1. Only extract what is explicitly stated — never infer.
@@ -58,6 +69,12 @@ Rules:
 5. Keep stage and TNM separate. "pT2 pN1 M0, Stage IIB" means
    stage="Stage IIB" and tnm="pT2 pN1 M0". If only TNM is reported, set
    tnm and leave stage null — do not put TNM in the stage field.
+6. A bilateral case is TWO tumors, not one with laterality "bilateral".
+   Separate any tumors that differ in size, grade, stage or node status.
+   A satellite nodule of the same tumor is NOT a separate tumor.
+   Lymph node counts belong to the tumor they drain — do not copy one
+   tumor's node status onto another.
+7. A report describing a single tumor returns a list with exactly one entry.
 """
 
 _llm: ChatOpenAI | None = None
@@ -81,18 +98,63 @@ def _get_llm() -> ChatOpenAI:
 def _get_structured_llm() -> ChatOpenAI:
     global _structured_llm
     if _structured_llm is None:
-        _structured_llm = _get_llm().with_structured_output(CancerDiagnosis)
+        _structured_llm = _get_llm().with_structured_output(TumorSet)
     return _structured_llm
 
 
-def extract_diagnosis(report_text: str) -> CancerDiagnosis:
-    """Extract cancer diagnosis from report text.
+def _size_mm(size: str | None) -> float:
+    """Parse a reported size to millimetres for comparison. 0.0 if unparseable."""
+    if not size:
+        return 0.0
+    m = re.search(r"(\d+(?:\.\d+)?)\s*(mm|cm)", size, re.IGNORECASE)
+    if not m:
+        return 0.0
+    value = float(m.group(1))
+    return value * 10 if m.group(2).lower() == "cm" else value
+
+
+def dominant_tumor(tumors: list[TumorInstance]) -> TumorInstance | None:
+    """Pick the tumour that should drive trial and therapy matching.
+
+    Node-positive disease outranks node-negative, then larger outranks smaller.
+    On TCGA-BH-A18H the first-listed tumour is the right breast (pT1b pN0,
+    0/1 nodes) while the clinically driving disease is the left (pT1c pN1a,
+    2/24 nodes) — taking the first entry would query trials for the wrong one.
+
+    ponytail: two signals, no stage-group parsing. Add AJCC ordering if a case
+    turns up where node status and size disagree with the stage group.
+    """
+    if not tumors:
+        return None
+    return max(
+        tumors,
+        key=lambda t: (t.nodes_positive or 0, _size_mm(t.tumor_size)),
+    )
+
+
+def _as_diagnosis(tumor: TumorInstance) -> CancerDiagnosis:
+    """Flatten one tumour to the legacy single-diagnosis shape."""
+    return CancerDiagnosis(
+        primary_site=tumor.primary_site,
+        histology=tumor.histology,
+        stage=tumor.stage,
+        tnm=tumor.tnm,
+        grade=tumor.grade,
+        laterality=tumor.laterality,
+        raw_text=tumor.raw_text,
+        source_span=tumor.source_span,
+        confidence=tumor.confidence,
+    )
+
+
+def extract_tumors(report_text: str) -> list[TumorInstance]:
+    """Extract every distinct tumour described in a report.
 
     Args:
         report_text: Clinical or pathology report text.
 
     Returns:
-        CancerDiagnosis with primary site, histology, stage, grade.
+        One TumorInstance per tumour. Empty if none could be extracted.
 
     Raises:
         RuntimeError: If OPENAI_API_KEY is not configured.
@@ -101,32 +163,46 @@ def extract_diagnosis(report_text: str) -> CancerDiagnosis:
     if not report_text or not report_text.strip():
         raise ValueError("report_text must not be empty")
 
-    logger.info("Extracting diagnosis from report (%d chars)", len(report_text))
+    logger.info("Extracting tumours from report (%d chars)", len(report_text))
 
-    structured_llm = _get_structured_llm()
-    result = structured_llm.invoke([
+    result = _get_structured_llm().invoke([
         {"role": "system", "content": DIAGNOSIS_PROMPT},
         {"role": "user", "content": report_text},
     ])
 
+    for tumor in result.tumors:
+        if tumor.raw_text and not tumor.source_span:
+            tumor.source_span = _find_span(report_text, tumor.raw_text)
+        if tumor.source_span:
+            start, end = tumor.source_span
+            snippet = report_text[start:end]
+            tumor.confidence = (
+                ConfidenceTier.HIGHEST
+                if snippet.lower() == tumor.raw_text.lower()
+                else ConfidenceTier.MEDIUM
+            )
+        else:
+            tumor.confidence = ConfidenceTier.LOW
+
     logger.info(
-        "Diagnosis: %s %s (%s)",
-        result.primary_site or "?",
-        result.histology or "?",
-        result.stage or "no stage",
+        "Extracted %d tumour(s): %s",
+        len(result.tumors),
+        "; ".join(
+            f"{t.label} [{t.primary_site or '?'} {t.histology or '?'} "
+            f"{t.tnm or t.stage or 'unstaged'}]"
+            for t in result.tumors
+        ) or "none",
     )
 
-    # Add source span + confidence
-    if result.raw_text and not result.source_span:
-        result.source_span = _find_span(report_text, result.raw_text)
-    if result.source_span:
-        start, end = result.source_span
-        snippet = report_text[start:end]
-        if snippet.lower() == result.raw_text.lower():
-            result.confidence = ConfidenceTier.HIGHEST
-        else:
-            result.confidence = ConfidenceTier.MEDIUM
-    else:
-        result.confidence = ConfidenceTier.LOW
+    return result.tumors
 
-    return result
+
+def extract_diagnosis(report_text: str) -> CancerDiagnosis | None:
+    """Extract the dominant tumour as a single diagnosis.
+
+    Kept for consumers that expect one diagnosis (trial condition query,
+    evaluator). Callers that need the full picture should use extract_tumors.
+    """
+    tumors = extract_tumors(report_text)
+    dominant = dominant_tumor(tumors)
+    return _as_diagnosis(dominant) if dominant else None

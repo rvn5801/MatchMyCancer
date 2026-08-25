@@ -12,7 +12,11 @@ from typing import Dict, Any
 
 from app.models.biomarker import ClinicalExtraction
 from app.pipelines.biomarker_extractor import extract_biomarkers
-from app.pipelines.diagnosis_extractor import extract_diagnosis
+from app.pipelines.diagnosis_extractor import (
+    _as_diagnosis,
+    dominant_tumor,
+    extract_tumors,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -39,20 +43,31 @@ def extract_clinical_data(document_text: str) -> ClinicalExtraction:
 
     logger.info("Starting clinical extraction (%d chars)", len(document_text))
 
-    biomarkers = extract_biomarkers(document_text)
-    diagnosis = extract_diagnosis(document_text)
+    # Tumours first: their labels become the fixed vocabulary the biomarker
+    # pass must use, so results can be grouped by tumour without fuzzy string
+    # matching between two independently-worded LLM outputs.
+    tumors = extract_tumors(document_text)
+    dominant = dominant_tumor(tumors)
+    diagnosis = _as_diagnosis(dominant) if dominant else None
+
+    # Only constrain the vocabulary when it disambiguates something. A
+    # single-tumour report needs no labels and a null one is unambiguous.
+    labels = [t.label for t in tumors] if len(tumors) > 1 else None
+    biomarkers = extract_biomarkers(document_text, tumor_labels=labels)
 
     result = ClinicalExtraction(
         biomarkers=biomarkers,
+        tumors=tumors,
         diagnosis=diagnosis,
         raw_report_text=document_text[:2000],
     )
 
     logger.info(
-        "Clinical extraction complete: %d biomarkers, diagnosis=%s %s",
+        "Clinical extraction complete: %d biomarkers, %d tumour(s), dominant=%s %s",
         len(biomarkers.biomarkers),
-        diagnosis.primary_site or "?",
-        diagnosis.histology or "?",
+        len(tumors),
+        diagnosis.primary_site if diagnosis else "?",
+        diagnosis.histology if diagnosis else "?",
     )
 
     return result

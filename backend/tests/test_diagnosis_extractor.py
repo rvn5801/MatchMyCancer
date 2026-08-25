@@ -5,7 +5,11 @@ import os
 import pytest
 
 from app.models.biomarker import CancerDiagnosis
-from app.pipelines.diagnosis_extractor import extract_diagnosis
+from app.pipelines.diagnosis_extractor import (
+    dominant_tumor,
+    extract_diagnosis,
+    extract_tumors,
+)
 
 
 def _requires_api_key():
@@ -96,13 +100,66 @@ class TestEdgeCases:
         with pytest.raises(ValueError, match="must not be empty"):
             extract_diagnosis("   \n  ")
 
-    def test_non_clinical_text_handled(self):
+    def test_non_clinical_text_returns_none(self):
+        """No tumour described means no diagnosis.
+
+        Contract change: this previously returned a CancerDiagnosis with every
+        field None but raw_text set to the input, which asserts a diagnosis
+        exists where none does. None is the honest answer, and every consumer
+        already treats diagnosis as optional.
+        """
         _requires_api_key()
 
-        report = "The weather is nice today."
+        assert extract_diagnosis("The weather is nice today.") is None
 
-        result = extract_diagnosis(report)
 
-        # Should still return a valid object, just with mostly None fields
-        assert isinstance(result, CancerDiagnosis)
-        assert result.raw_text is not None
+class TestMultipleTumors:
+    """A report can describe more than one tumour — see TCGA-BH-A18H."""
+
+    BILATERAL = """\
+FINAL DIAGNOSIS:
+PART 1: BREAST, RIGHT AT 9 O'CLOCK, SEGMENTAL MASTECTOMY -
+A. INVASIVE DUCTAL CARCINOMA, NO SPECIAL TYPE.
+B. NOTTINGHAM GRADE 2.
+C. THE INVASIVE TUMOR MEASURES 0.8 CM IN LARGEST DIMENSION.
+T STAGE, PATHOLOGIC: pT1b   N STAGE, PATHOLOGIC: pN0
+LYMPH NODES POSITIVE: 0   LYMPH NODES EXAMINED: 1
+
+PART 3: BREAST, LEFT AT 12 O'CLOCK, SEGMENTAL MASTECTOMY -
+A. INVASIVE DUCTAL CARCINOMA, NO SPECIAL TYPE.
+B. NOTTINGHAM GRADE 3.
+C. THE INVASIVE TUMOR MEASURES 1.3 CM IN LARGEST DIMENSION.
+I. FOCAL LYMPHOVASCULAR SPACE INVASION IS IDENTIFIED.
+T STAGE, PATHOLOGIC: pT1c   N STAGE, PATHOLOGIC: pN1a
+LYMPH NODES POSITIVE: 2   LYMPH NODES EXAMINED: 24
+"""
+
+    def test_bilateral_yields_two_tumors(self):
+        _requires_api_key()
+
+        tumors = extract_tumors(self.BILATERAL)
+
+        assert len(tumors) == 2, f"expected 2 tumours, got {[t.label for t in tumors]}"
+        assert {t.laterality and t.laterality.lower() for t in tumors} == {
+            "right",
+            "left",
+        }
+
+    def test_node_counts_are_not_shared_between_tumors(self):
+        """Copying one tumour's node status onto the other is the classic error."""
+        _requires_api_key()
+
+        tumors = extract_tumors(self.BILATERAL)
+        positives = sorted(t.nodes_positive for t in tumors if t.nodes_positive is not None)
+
+        assert positives == [0, 2], f"expected 0 and 2 positive nodes, got {positives}"
+
+    def test_dominant_is_the_node_positive_tumor(self):
+        """The left breast drives care despite being listed second."""
+        _requires_api_key()
+
+        dominant = dominant_tumor(extract_tumors(self.BILATERAL))
+
+        assert dominant is not None
+        assert dominant.laterality is not None
+        assert "left" in dominant.laterality.lower()
