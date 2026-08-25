@@ -5,11 +5,13 @@ import type { AnalyzeResponse, StreamEvent } from "@/lib/api";
 import { analyzeStream } from "@/lib/api";
 import Icon from "@/components/Icon";
 import NoBiomarkersNotice from "@/components/NoBiomarkersNotice";
+import GlossaryText from "@/components/GlossaryText";
 import TumorSection, {
   Badge,
   BiomarkerCard,
   TONES,
 } from "@/components/TumorSection";
+import { openQuestionSheet } from "@/lib/questionSheet";
 
 // ── Streaming progress + results orchestrator ─────────────────────
 
@@ -268,6 +270,15 @@ export function ResultsDisplay({ data, onReset }: ResultsDisplayProps) {
         </div>
         <div className="flex items-center gap-2">
           <button
+            onClick={() => {
+              if (!openQuestionSheet(data))
+                alert("Please allow pop-ups to open the question sheet.");
+            }}
+            className="inline-flex items-center gap-2 px-3.5 py-2 bg-white border border-slate-200 text-slate-700 rounded-lg hover:bg-slate-50 text-sm font-medium transition-colors"
+          >
+            <Icon name="file" size={16} /> Questions for my doctor
+          </button>
+          <button
             onClick={handleDownload}
             className="inline-flex items-center gap-2 px-3.5 py-2 bg-white border border-slate-200 text-slate-700 rounded-lg hover:bg-slate-50 text-sm font-medium transition-colors"
           >
@@ -445,7 +456,11 @@ export function ResultsDisplay({ data, onReset }: ResultsDisplayProps) {
         <aside className="space-y-4 lg:sticky lg:top-24 h-fit">
           <section className="bg-white rounded-xl p-5 border border-slate-200">
             <SectionTitle icon="file" title="Clinical summary" small />
-            <p className="text-sm text-slate-600 leading-relaxed whitespace-pre-line">{clinical_summary}</p>
+            {/* Terms with dotted underlines are tappable definitions. */}
+            <GlossaryText
+              text={clinical_summary}
+              className="text-sm text-slate-600 leading-relaxed whitespace-pre-line"
+            />
           </section>
 
           <section className="bg-white rounded-xl p-5 border border-slate-200">

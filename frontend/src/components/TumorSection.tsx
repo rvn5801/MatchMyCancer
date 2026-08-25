@@ -8,6 +8,27 @@
 
 import type { Biomarker, Explanation, TumorInstance } from "@/lib/api";
 import Icon from "@/components/Icon";
+import GlossaryText from "@/components/GlossaryText";
+
+/** The verbatim report text a finding came from. This is the trust mechanism
+ *  made visible: nothing shown here was invented — the reader can check the
+ *  exact line in their own document. */
+export function SourceQuote({ text }: { text: string | null | undefined }) {
+  if (!text?.trim()) return null;
+  return (
+    <details className="mt-2 text-sm">
+      <summary className="text-slate-400 cursor-pointer hover:text-slate-600">
+        Where this comes from
+      </summary>
+      <blockquote className="mt-1.5 border-l-2 border-slate-200 pl-3 text-xs text-slate-500 font-mono whitespace-pre-wrap break-words max-h-40 overflow-y-auto">
+        {text.trim()}
+      </blockquote>
+      <p className="mt-1 text-[11px] text-slate-400">
+        Copied word-for-word from your document.
+      </p>
+    </details>
+  );
+}
 
 // ── Shared presentational primitives ──────────────────────────────
 
@@ -107,11 +128,15 @@ export function BiomarkerCard({
       {explanation && (
         <details className="text-sm">
           <summary className="text-teal-600 cursor-pointer">Explanation</summary>
-          <p className="text-slate-600 mt-1.5 leading-relaxed">
-            {explanation.explanation}
-          </p>
+          <div className="mt-1.5">
+            <GlossaryText
+              text={explanation.explanation}
+              className="text-slate-600 leading-relaxed"
+            />
+          </div>
         </details>
       )}
+      <SourceQuote text={bm.raw_text} />
     </div>
   );
 }
@@ -219,6 +244,7 @@ export default function TumorSection({
                   <Fact key={f.label} label={f.label} value={f.value} />
                 ))}
               </div>
+              <SourceQuote text={tumor.raw_text} />
 
               {mine.length > 0 && (
                 <div className="mt-4 pt-4 border-t border-slate-100">
