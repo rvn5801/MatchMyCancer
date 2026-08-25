@@ -32,6 +32,7 @@ pathology_reports/
 pathology_reports_scanned/
 dev.db
 
+
 # Misc
 .DS_Store
 *.log
@@ -45,3 +46,4 @@ dev.db
 /test_reports
 
 
+.env.template
