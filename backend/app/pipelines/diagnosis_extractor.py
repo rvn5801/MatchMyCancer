@@ -55,7 +55,9 @@ Extract EVERY distinct tumor described in this medical report. For each one:
 - nodes_examined / nodes_positive: lymph node counts for THIS tumor
 - lymphovascular_invasion: true if identified, false if explicitly absent
 - margins: margin status as reported
-- raw_text: the exact text from the report that supports this tumor
+- raw_text: a SHORT verbatim excerpt (at most 2-3 lines) that identifies this
+  tumor — its diagnosis line, NOT the entire section. Long quotes get the
+  output truncated.
 
 Rules:
 1. Only extract what is explicitly stated — never infer.
@@ -75,6 +77,10 @@ Rules:
    Lymph node counts belong to the tumor they drain — do not copy one
    tumor's node status onto another.
 7. A report describing a single tumor returns a list with exactly one entry.
+8. If the text does not describe any cancer or tumor, return an EMPTY tumors
+   list. Never fabricate a tumor, and never copy the examples from these
+   instructions into your output — "pT2 pN1 M0, Stage IIB" above is an
+   example of formatting, not a finding.
 """
 
 _llm: ChatOpenAI | None = None
@@ -90,7 +96,11 @@ def _get_llm() -> ChatOpenAI:
             model=settings.openai_model,
             api_key=settings.openai_api_key,
             temperature=0.0,
-            max_tokens=1000,
+            # TumorSet returns EVERY tumour with per-field values and raw_text
+            # excerpts. At 1000 the tool-call JSON truncated mid-string on a
+            # real 2-tumour report (unterminated string -> OutputParserException
+            # -> HTTP 500 in production).
+            max_tokens=4000,
         )
     return _llm
 
@@ -183,6 +193,28 @@ def extract_tumors(report_text: str) -> list[TumorInstance]:
             )
         else:
             tumor.confidence = ConfidenceTier.LOW
+
+    # Fabrication guard. Fed "The weather is nice today.", the model returned
+    # a complete breast cancer diagnosis copied from this prompt's own example.
+    # A tumour none of whose extracted values appear anywhere in the document
+    # is not evidence — it is invented, and it must not reach a patient.
+    def _has_evidence(t: TumorInstance) -> bool:
+        if t.source_span:
+            return True
+        lower = report_text.lower()
+        return any(
+            value and value.lower() in lower
+            for value in (t.histology, t.tnm, t.primary_site)
+        )
+
+    fabricated = [t for t in result.tumors if not _has_evidence(t)]
+    if fabricated:
+        logger.warning(
+            "Dropped %d tumour(s) with no textual evidence in the document: %s",
+            len(fabricated),
+            "; ".join(f"{t.label} [{t.histology or '?'}]" for t in fabricated),
+        )
+        result.tumors = [t for t in result.tumors if _has_evidence(t)]
 
     logger.info(
         "Extracted %d tumour(s): %s",
