@@ -86,6 +86,7 @@ def _get_llm() -> ChatOpenAI:
         _explanation_llm = ChatOpenAI(
             model=settings.openai_model,
             api_key=settings.openai_api_key,
+            base_url=settings.openai_base_url or None,
             temperature=0.3,  # warmer for natural language, still conservative
             max_tokens=1000,
         )

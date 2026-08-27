@@ -4,6 +4,12 @@ from pydantic_settings import BaseSettings
 class Settings(BaseSettings):
     openai_api_key: str = ""
     openai_model: str = "gpt-4o"
+    # Any OpenAI-compatible endpoint. Empty = api.openai.com. For NVIDIA's
+    # hosted catalog: https://integrate.api.nvidia.com/v1 with an nvapi- key
+    # and e.g. openai_model=meta/llama-3.3-70b-instruct. Lets the evaluation
+    # run on a free open-weights model, which is also the reproducible
+    # condition a benchmark paper needs.
+    openai_base_url: str = ""
     chroma_persist_dir: str = "./chroma_data"
     log_level: str = "INFO"
     redis_host: str = "localhost"
